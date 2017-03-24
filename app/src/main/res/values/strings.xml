@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Step Count Demo</string>
+
+    <string name="step_count">Total Step Count</string>
+    <string name="sensor_not_available">Count sensor not available</string>
+</resources>
