@@ -1,8 +1,10 @@
 package com.example.android.stepcountdemo;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 /**
@@ -23,6 +25,10 @@ public class MainActivity extends AppCompatActivity {
      * {@link GlobalVariable} to get the step count value
      */
     private GlobalVariable mGlobalVariable;
+    /**
+     * {@link StepCountReceiver} to restart the service when the task is killed
+     */
+    private StepCountReceiver mStepCountReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +40,14 @@ public class MainActivity extends AppCompatActivity {
          * Get the {@link GlobalVariable} instance
          */
         mGlobalVariable = (GlobalVariable) getApplication();
+        mStepCountReceiver = new StepCountReceiver();
 
         /**
-         * Start {@link StepCountService}
+         * Register service on the broadcast and start {@link StepCountService}
          */
         Intent intent = new Intent(getApplicationContext(), StepCountService.class);
+        IntentFilter intentFilter = new IntentFilter("com.example.android.stepcountdemo.StepCountService");
+        registerReceiver(mStepCountReceiver, intentFilter);
         startService(intent);
     }
 
@@ -64,5 +73,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         stepCountView.setText(String.valueOf(mGlobalVariable.getStepCount()));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("MainActivity", "onDestroy");
+        unregisterReceiver(mStepCountReceiver);
     }
 }

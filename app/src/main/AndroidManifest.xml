@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.stepcountdemo">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:name=".GlobalVariable"
         android:allowBackup="true"
@@ -12,7 +14,19 @@
 
         <service
             android:name=".StepCountService"
+            android:enabled="true"
             android:exported="false" />
+
+        <receiver
+            android:name=".StepCountReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:label="StepCountReceiver">
+            <intent-filter>
+                <action android:name="ACTION.RESTART.StepCountService" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <activity android:name=".MainActivity">
             <intent-filter>
