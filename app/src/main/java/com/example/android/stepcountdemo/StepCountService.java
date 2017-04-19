@@ -132,15 +132,15 @@ public class StepCountService extends Service implements SensorEventListener {
         /**
          * When id is 0, notification is hidden from the user
          */
-        startForeground(0, new Notification());
+        startForeground(1, new Notification());
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         /**
          * Don't show the notification when using startForeground()
          */
-        Notification notification = new Notification.Builder(getApplicationContext()).setContentText("")
-                .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("").build();
+        Notification notification = new Notification.Builder(getApplicationContext()).setContentText("App Running")
+                .setSmallIcon(R.mipmap.ic_launcher).setContentTitle(getString(R.string.app_name)).build();
         notificationManager.notify(startId, notification);
         notificationManager.cancel(startId);
 
