@@ -1,7 +1,5 @@
 package com.example.android.stepcountdemo;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -82,10 +80,5 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Log.i("MainActivity", "onDestroy");
         unregisterReceiver(mStepCountReceiver);
-
-        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
-        Notification notification = new Notification.Builder(this).setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(getString(R.string.app_name)).setContentText("앱 꺼짐").build();
-        notificationManager.notify(1, notification);
     }
 }
