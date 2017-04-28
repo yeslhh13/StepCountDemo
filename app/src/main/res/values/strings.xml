@@ -1,6 +1,16 @@
 <resources>
     <string name="app_name">Step Count Demo</string>
+    <string name="title_activity_loading">LoadingActivity</string>
 
     <string name="step_count">Total Step Count</string>
     <string name="sensor_not_available">Count sensor not available</string>
+
+    <string name="layout_main_main"># Walk around Main #</string>
+    <string name="layout_main_walk">걸음</string>
+
+    <string name="image_view_description_tree">Tree growing&#8230;</string>
+    <string name="image_view_description_grass">Green grass</string>
+    <string name="image_view_description_loading">Loading&#8230;</string>
+
+    <string name="tab_first">나의 나무</string>
 </resources>

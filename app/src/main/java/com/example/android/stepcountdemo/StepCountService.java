@@ -2,7 +2,6 @@ package com.example.android.stepcountdemo;
 
 import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -129,19 +128,19 @@ public class StepCountService extends Service implements SensorEventListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("StepCountService", "onStartCommand");
-        /**
-         * When id is 0, notification is hidden from the user
-         */
-        startForeground(1, new Notification());
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Intent intent1 = new Intent(this, LoadingActivity.class);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
 
         /**
          * Show the notification when using startForeground()
          */
         Notification notification = new Notification.Builder(getApplicationContext()).setContentText("App Running")
-                .setSmallIcon(R.mipmap.ic_launcher).setContentTitle(getString(R.string.app_name)).build();
-        notificationManager.notify(startId, notification);
+                .setSmallIcon(R.mipmap.ic_launcher).setContentTitle(getString(R.string.app_name)).setContentIntent(pendingIntent)
+                .build();
+
+        startForeground(1, notification);
 
         mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
 
