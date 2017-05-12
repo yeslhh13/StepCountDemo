@@ -32,6 +32,27 @@ public class MainActivity extends TabActivity {
         tabHost.addTab(spec);
 
         /**
+         * Create diary tab
+         */
+        intent = new Intent(this, DiaryActivity.class);
+        spec = tabHost.newTabSpec(getString(R.string.tab_second)).setIndicator(getString(R.string.tab_second)).setContent(intent);
+        tabHost.addTab(spec);
+
+        /**
+         * Create calendar tab
+         */
+        intent = new Intent(this, CalendarActivity.class);
+        spec = tabHost.newTabSpec(getString(R.string.tab_third)).setIndicator(getString(R.string.tab_third)).setContent(intent);
+        tabHost.addTab(spec);
+
+        /**
+         * Create donation tab
+         */
+        intent = new Intent(this, DonationActivity.class);
+        spec = tabHost.newTabSpec(getString(R.string.tab_fourth)).setIndicator(getString(R.string.tab_fourth)).setContent(intent);
+        tabHost.addTab(spec);
+
+        /**
          * Set the main tab to first tab(TreeActivity.class)
          */
         tabHost.setCurrentTab(0);
