@@ -1,4 +1,4 @@
-package com.example.android.stepcountdemo;
+package com.example.android.stepcountdemo.Diary;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+
+import com.example.android.stepcountdemo.R;
 
 /**
  * Created by soyeon on 2017-05-14.

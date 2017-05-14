@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Window;
 import android.widget.TabHost;
 
+import com.example.android.stepcountdemo.Diary.DiaryActivity;
+
 /**
  * Created by Kat on 2017-04-28
  * <p>

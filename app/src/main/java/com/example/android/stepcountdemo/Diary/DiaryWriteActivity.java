@@ -1,4 +1,4 @@
-package com.example.android.stepcountdemo;
+package com.example.android.stepcountdemo.Diary;
 
 /**
  * Created by soyeon on 2017-05-14.
@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.android.stepcountdemo.R;
 
 public class DiaryWriteActivity extends AppCompatActivity {
     EditText mMemoEdit = null;

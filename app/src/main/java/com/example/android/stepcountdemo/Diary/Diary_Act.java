@@ -1,4 +1,4 @@
-package com.example.android.stepcountdemo;
+package com.example.android.stepcountdemo.Diary;
 
 /**
  * Created by soyeon on 2017-05-14.

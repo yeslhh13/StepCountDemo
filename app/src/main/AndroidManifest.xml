@@ -39,10 +39,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".DiaryActivity" />
+        <activity android:name=".Diary.DiaryActivity" />
         <activity android:name=".CalendarActivity" />
         <activity android:name=".DonationActivity"></activity>
-        <activity android:name=".DiaryWriteActivity" />
+        <activity android:name=".Diary.DiaryWriteActivity" />
     </application>
 
 </manifest>
