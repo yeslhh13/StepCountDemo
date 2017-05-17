@@ -3,6 +3,8 @@ package com.example.android.stepcountdemo;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Window;
@@ -14,8 +16,6 @@ import android.widget.TextView;
  * <p>
  * Tree activity
  * Detect user's step count and show it to the user with the state of the tree
- * <p>
- * TODO: find a method to change the TextView immediately when the sensor changes
  */
 
 public class TreeActivity extends AppCompatActivity {
@@ -35,6 +35,10 @@ public class TreeActivity extends AppCompatActivity {
      * ImageView to show the tree state to the user
      */
     private ImageView treeImage;
+    /**
+     * Handler to show the user's step count in real time
+     */
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,37 +62,69 @@ public class TreeActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter("com.example.android.stepcountdemo.StepCountService");
         registerReceiver(mStepCountReceiver, intentFilter);
         startService(intent);
+
+        /**
+         * Create Handler instance by the default constructor and start loop
+         */
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                setViews();
+                Log.i("HandlerMessage", "Handler running!");
+
+                this.sendEmptyMessageDelayed(0, 1000);
+            }
+        };
+
+        mHandler.sendEmptyMessage(1);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        setViews();
-    }
-
+    /**
+     * stop the Handler loop when paused
+     */
     @Override
     protected void onPause() {
         super.onPause();
-        setViews();
+        mHandler.removeMessages(0);
     }
 
+    /**
+     * restart the Handler loop when restarted
+     */
     @Override
     protected void onRestart() {
         super.onRestart();
-        setViews();
+        mHandler.sendEmptyMessage(1);
     }
 
+    /**
+     * restart the Handler loop when resumed
+     */
     @Override
     protected void onResume() {
         super.onResume();
-        setViews();
+        mHandler.sendEmptyMessage(1);
     }
 
+    /**
+     * stop the Handler loop when destroyed
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.i("TreeActivity", "onDestroy");
         unregisterReceiver(mStepCountReceiver);
+        mHandler.removeMessages(0);
+    }
+
+    /**
+     * stop the Handler loop when stopped
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mHandler.removeMessages(1);
     }
 
     /**
