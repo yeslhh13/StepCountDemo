@@ -42,11 +42,13 @@ public class TreeDBHelper extends SQLiteOpenHelper {
         /**
          * TODO:Create a String that contains the SQL statement to create table
          */
-//        String SQL_CREATE_TABLE=
+//        String SQL_CREATE_TABLE_MAIN=;
+//        String SQL_CREATE_TABLE_DIARY=;
         /**
          * TODO:execute SQL statement
          */
-//        db.execSQL(SQL_CREATE_TABLE);
+//        db.execSQL(SQL_CREATE_TABLE_MAIN);
+//        db.execSQL(SQL_CREATE_TABLE_DIARY);
     }
 
     /**
