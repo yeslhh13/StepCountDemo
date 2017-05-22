@@ -82,6 +82,7 @@ public class StepCountService extends Service implements SensorEventListener {
 
     @Override
     public void onDestroy() {
+        //TODO:Save the step count data to the database
         super.onDestroy();
         Log.i("StepCountService", "onDestroy");
         mCountDownTimer.cancel();
@@ -105,12 +106,13 @@ public class StepCountService extends Service implements SensorEventListener {
 
     /**
      * Called when there is a new sensor event
+     * increase the step count variable when the sensor is changed
      *
      * @param event to get the new sensor event from
      */
     @Override
     public void onSensorChanged(SensorEvent event) {
-        mGlobalVariable.setStepCount((int) event.values[0]);
+        mGlobalVariable.increaseStepCount();
     }
 
     /**
@@ -127,6 +129,7 @@ public class StepCountService extends Service implements SensorEventListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        //TODO:Load the step count data from the database if today's data exists
         Log.i("StepCountService", "onStartCommand");
 
         Intent intent1 = new Intent(this, LoadingActivity.class);
@@ -175,4 +178,6 @@ public class StepCountService extends Service implements SensorEventListener {
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
     }
+
+
 }

@@ -1,4 +1,4 @@
-package com.example.android.stepcountdemo.Diary;
+package com.example.android.stepcountdemo.diary;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -32,5 +32,9 @@ public class StepCountReceiver extends BroadcastReceiver {
             Intent i = new Intent(context, StepCountService.class);
             context.startService(i);
         }
+
+        if (intent.getAction().equals(Intent.ACTION_DATE_CHANGED)) {
+            //TODO:Save the Step Count variable to the database
+        }
     }
 }

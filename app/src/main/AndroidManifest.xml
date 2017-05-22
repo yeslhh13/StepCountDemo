@@ -23,6 +23,7 @@
             android:label="StepCountReceiver">
             <intent-filter>
                 <action android:name="ACTION.RESTART.StepCountService" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
@@ -34,15 +35,14 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".Diary.DiaryActivity" />
+        <activity android:name=".diary.DiaryActivity" />
         <activity android:name=".CalendarActivity" />
-        <activity android:name=".DonationActivity"></activity>
-        <activity android:name=".Diary.DiaryWriteActivity" />
+        <activity android:name=".DonationActivity" />
+        <activity android:name=".diary.DiaryWriteActivity" />
     </application>
 
 </manifest>

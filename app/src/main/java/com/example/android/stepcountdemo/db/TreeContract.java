@@ -1,4 +1,4 @@
-package com.example.android.stepcountdemo.DB;
+package com.example.android.stepcountdemo.db;
 
 import android.content.ContentResolver;
 import android.net.Uri;
