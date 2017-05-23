@@ -7,7 +7,6 @@ package com.example.android.stepcountdemo.diary;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,7 +17,6 @@ public class DiaryWriteActivity extends AppCompatActivity {
     Diary_Act mDiary_Act = new Diary_Act(this);
 
     protected void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diary_write);
         mMemoEdit = (EditText) findViewById(R.id.memo_edit);

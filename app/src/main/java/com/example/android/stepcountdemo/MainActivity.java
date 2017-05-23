@@ -3,7 +3,6 @@ package com.example.android.stepcountdemo;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Window;
 import android.widget.TabHost;
 
 import com.example.android.stepcountdemo.calendar.CalendarActivity;
@@ -19,7 +18,6 @@ public class MainActivity extends TabActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
