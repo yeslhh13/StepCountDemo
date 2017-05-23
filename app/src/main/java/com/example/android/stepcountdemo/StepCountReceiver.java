@@ -1,8 +1,10 @@
 package com.example.android.stepcountdemo;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 /**
@@ -35,6 +37,18 @@ public class StepCountReceiver extends BroadcastReceiver {
 
         if (intent.getAction().equals(Intent.ACTION_DATE_CHANGED)) {
             //TODO:Save the Step Count variable to the database
+            /**
+             * temporary code
+             */
+            GlobalVariable mGlobal = new GlobalVariable();
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                    .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("자정 알림")
+                    .setContentText("어제는 " + String.valueOf(mGlobal.getStepCount()) + "걸음 걸으셨습니다!")
+                    .setDefaults(NotificationCompat.DEFAULT_VIBRATE).setAutoCancel(true).setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            mGlobal.resetStepCount();
+
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(0, builder.build());
         }
     }
 }
