@@ -7,6 +7,7 @@ import android.widget.TabHost;
 
 import com.example.android.stepcountdemo.calendar.CalendarActivity;
 import com.example.android.stepcountdemo.diary.DiaryActivity;
+import com.example.android.stepcountdemo.setting.SettingActivity;
 
 /**
  * Created by Kat on 2017-04-28
@@ -51,6 +52,13 @@ public class MainActivity extends TabActivity {
          */
         intent = new Intent(this, DonationActivity.class);
         spec = tabHost.newTabSpec(getString(R.string.tab_fourth)).setIndicator(getString(R.string.tab_fourth)).setContent(intent);
+        tabHost.addTab(spec);
+
+        /**
+         * Create setting tab (환경설정 단어 넣어도 되는데 심심해서 해봤어...ㅎ..바꿔도 돼.........)
+         */
+        intent = new Intent(this, SettingActivity.class);
+        spec = tabHost.newTabSpec(getString(R.string.tab_fifth)).setIndicator(getString(R.string.tab_fifth)).setContent(intent);
         tabHost.addTab(spec);
 
         /**

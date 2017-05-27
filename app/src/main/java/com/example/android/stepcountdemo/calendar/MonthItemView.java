@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
+
 /**
  * Created by soyeon on 2017-05-22.
  */

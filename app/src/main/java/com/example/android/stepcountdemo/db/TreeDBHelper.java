@@ -16,11 +16,13 @@ public class TreeDBHelper extends SQLiteOpenHelper {
      * Name of the DB file
      * TODO:Name it
      */
+
     public static final String DATABASE_NAME = "";
     /**
      * DB version
      * To change the DB schema, you must increment the DB version
      */
+
     private static final int DATABASE_VERSION = 1;
 
     /**
@@ -28,9 +30,11 @@ public class TreeDBHelper extends SQLiteOpenHelper {
      *
      * @param context of the app
      */
+
     public TreeDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
 
     /**
      * Called when DB is created for the first time

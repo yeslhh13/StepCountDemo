@@ -22,7 +22,8 @@ public final class TreeContract {
     /**
      * Possible path appended to base content URI for possible URI
      */
-    public static final String PATH_STEPS = "steps";
+    public static final String PATH_MAIN = "steps";
+    public static final String PATH_DIARY = "diary";
 
     /**
      * To prevent from accidentally instantiating the contract class
@@ -38,11 +39,11 @@ public final class TreeContract {
         /**
          * The content Uri to access the steps data in the provider
          */
-        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_STEPS);
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_MAIN);
         /**
          * The MIME type of the {@link #CONTENT_URI} for a list of steps
          */
-        public static final String CONTENT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STEPS;
+        public static final String CONTENT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MAIN;
         /**
          * Name of DB table for steps
          */

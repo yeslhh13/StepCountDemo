@@ -14,6 +14,11 @@ import android.util.Log;
  */
 
 public class StepCountReceiver extends BroadcastReceiver {
+    /**
+     * {@link GlobalVariable} to get the step count value
+     */
+    private GlobalVariable mGlobal;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i("StepCountReceiver", "onReceive");
@@ -40,7 +45,7 @@ public class StepCountReceiver extends BroadcastReceiver {
             /**
              * temporary code
              */
-            GlobalVariable mGlobal = new GlobalVariable();
+            mGlobal = (GlobalVariable) context.getApplicationContext();
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("자정 알림")
                     .setContentText("어제는 " + String.valueOf(mGlobal.getStepCount()) + "걸음 걸으셨습니다!")

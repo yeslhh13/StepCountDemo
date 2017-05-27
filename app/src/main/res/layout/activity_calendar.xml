@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:weightSum="1"
     tools:context="com.example.android.stepcountdemo.calendar.CalendarActivity">
 
     <RelativeLayout
@@ -29,7 +30,7 @@
             android:layout_centerInParent="true"
             android:gravity="center_horizontal"
             android:text="달력"
-            android:textSize="24sp"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
         <Button
@@ -44,12 +45,66 @@
     <GridView
         android:id="@+id/monthView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="247dp"
         android:background="#ffbbbbbb"
         android:horizontalSpacing="1dp"
         android:numColumns="7"
         android:stretchMode="columnWidth"
         android:verticalSpacing="1dp" />
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:baselineAligned="false"
+        android:padding="5dp">
 
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_weight="1"
+            android:background="#868754"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/diary_image"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:contentDescription="@string/image_view_description_loading"
+                android:src="@mipmap/ic_launcher" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_weight="2.5"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/diary_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="다이어리를 보여줄거다"
+                android:textColor="#070707"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:typeface="serif" />
+
+            <TextView
+                android:id="@+id/diary_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:text="여긴 내용"
+                android:textColor="#070707"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:typeface="monospace" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+ 

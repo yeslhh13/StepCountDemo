@@ -1,6 +1,6 @@
 package com.example.android.stepcountdemo.calendar;
 
-
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -33,6 +33,11 @@ public class CalendarActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+
+        //폰트설정! 연습
+        Typeface typeFace = Typeface.createFromAsset(getAssets(), "fonts/AmaticSC-Bold.ttf");
+        TextView textView1 = (TextView) findViewById(R.id.monthText);
+        textView1.setTypeface(typeFace);
 
         // 월별 캘린더 뷰 객체 참조
         monthView = (GridView) findViewById(R.id.monthView);
@@ -81,7 +86,7 @@ public class CalendarActivity extends AppCompatActivity {
         curYear = monthViewAdapter.getCurYear();
         curMonth = monthViewAdapter.getCurMonth();
 
-        monthText.setText(curYear + "년 " + (curMonth + 1) + "월");
+        monthText.setText("Year " + curYear + "  /  Month  " + (curMonth + 1));
     }
 
 

@@ -220,9 +220,10 @@ public class MonthAdapter extends BaseAdapter {
             case 10:
                 return (30);
 
+            // 윤년 계산(2월)
             default:
                 if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) {
-                    return (29);   // 2월 윤년계산
+                    return (29);
                 } else {
                     return (28);
                 }
