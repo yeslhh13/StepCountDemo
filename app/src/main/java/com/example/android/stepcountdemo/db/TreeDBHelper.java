@@ -14,10 +14,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class TreeDBHelper extends SQLiteOpenHelper {
     /**
      * Name of the DB file
-     * TODO:Name it
      */
-
-    public static final String DATABASE_NAME = "";
+    public static final String DATABASE_NAME = "greenTree.db";
     /**
      * DB version
      * To change the DB schema, you must increment the DB version
@@ -43,16 +41,33 @@ public class TreeDBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        /**
-         * TODO:Create a String that contains the SQL statement to create table
-         */
-//        String SQL_CREATE_TABLE_MAIN=;
-//        String SQL_CREATE_TABLE_DIARY=;
-        /**
-         * TODO:execute SQL statement
-         */
-//        db.execSQL(SQL_CREATE_TABLE_MAIN);
-//        db.execSQL(SQL_CREATE_TABLE_DIARY);
+        String SQL_CREATE_TABLE_MAIN = "CREATE TABLE " + TreeContract.MainEntry.TABLE_NAME
+                + " (" + TreeContract.MainEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + TreeContract.MainEntry.COLUMN_TREE_TYPE + " TEXT NOT NULL, "
+                + TreeContract.MainEntry.COLUMN_TREE_NAME + " TEXT, "
+                + TreeContract.MainEntry.COLUMN_TREE_LEVEL + " INTEGER NOT NULL DEFAULT 0);";
+
+        String SQL_CREATE_TABLE_DIARY = "CREATE TABLE " + TreeContract.DiaryEntry.TABLE_NAME
+                + " (" + TreeContract.DiaryEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + TreeContract.DiaryEntry.COLUMN_DIARY_TITLE + " TEXT NOT NULL, "
+                + TreeContract.DiaryEntry.COLUMN_DIARY_CONTENT + " TEXT NOT NULL, "
+                + TreeContract.DiaryEntry.COLUMN_DIARY_IMAGE + " BLOB);";
+
+        String SQL_CREATE_TABLE_DONATION = "CREATE TABLE " + TreeContract.DonationEntry.TABLE_NAME
+                + " (" + TreeContract.DonationEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + TreeContract.DonationEntry.COLUMN_DONATION_TITLE + " TEXT NOT NULL, "
+                + TreeContract.DonationEntry.COLUMN_DONATION_MONEY + " INTEGER NOT NULL DEFAULT 0, "
+                + TreeContract.DonationEntry.COLUMN_DONATION_IMAGE + " BLOB NOT NULL);";
+
+        String SQL_CREATE_TABLE_STEPS = "CREATE TABLE " + TreeContract.StepsEntry.TABLE_NAME
+                + " (" + TreeContract.StepsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + TreeContract.StepsEntry.COLUMN_STEPS_DATE + " TEXT NOT NULL, "
+                + TreeContract.StepsEntry.COLUMN_STEPS_VALUE + " INTEGER NOT NULL DEFAULT 0);";
+
+        db.execSQL(SQL_CREATE_TABLE_MAIN);
+        db.execSQL(SQL_CREATE_TABLE_DIARY);
+        db.execSQL(SQL_CREATE_TABLE_DONATION);
+        db.execSQL(SQL_CREATE_TABLE_STEPS);
     }
 
     /**

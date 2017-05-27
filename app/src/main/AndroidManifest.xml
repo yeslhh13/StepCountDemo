@@ -28,6 +28,11 @@
             </intent-filter>
         </receiver>
 
+        <provider
+            android:name=".db.TreeProvider"
+            android:authorities="com.example.android.stepcountdemo"
+            android:exported="false" />
+
         <activity android:name=".TreeActivity" />
         <activity
             android:name=".LoadingActivity"
