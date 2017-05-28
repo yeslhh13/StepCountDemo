@@ -300,35 +300,263 @@ public class TreeProvider extends ContentProvider {
         }
     }
 
+    /**
+     * Insert a tree into the database with the given content values
+     *
+     * @return a new content URI for the specific row in the database
+     */
     private Uri insertTree(Uri uri, ContentValues values) {
-        return null;
+        /**
+         * Check that the tree type is not null
+         */
+        String tree_type = values.getAsString(TreeContract.MainEntry.COLUMN_TREE_TYPE);
+        if (tree_type == null)
+            throw new IllegalArgumentException("트리의 종류를 선택해주세요!");
+
+        /**
+         * Get the writable database
+         */
+        SQLiteDatabase database = mDBHelper.getWritableDatabase();
+        /**
+         * Insert the new tree with the given values
+         * If the ID is -1, then the insertion is failed
+         */
+        long id = database.insert(TreeContract.MainEntry.TABLE_NAME, null, values);
+        if (id == -1)
+            return null;
+
+        /**
+         * Notify all listeners that the data has changed for the tree content URI
+         */
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        /**
+         * Return the new URI withe the ID of the newly inserted row appended at the end
+         */
+        return ContentUris.withAppendedId(uri, id);
     }
 
+    /**
+     * Update trees in the database with the given content values
+     *
+     * @return the number of rows that were successfully updated
+     */
     private int updateTree(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        /**
+         * If the key is present, check that the value is not null
+         */
+        if (values.containsKey(TreeContract.MainEntry.COLUMN_TREE_NAME)) {
+            String tree_name = values.getAsString(TreeContract.MainEntry.COLUMN_TREE_NAME);
+            if (tree_name == null)
+                throw new IllegalArgumentException("이름을 입력해주세요!");
+        }
+
+        if (values.containsKey(TreeContract.MainEntry.COLUMN_TREE_TYPE)) {
+            String tree_type = values.getAsString(TreeContract.MainEntry.COLUMN_TREE_TYPE);
+            if (tree_type == null)
+                throw new IllegalArgumentException("종류를 선택해주세요!");
+        }
+
+        if (values.containsKey(TreeContract.MainEntry.COLUMN_TREE_LEVEL)) {
+            Integer tree_level = values.getAsInteger(TreeContract.MainEntry.COLUMN_TREE_LEVEL);
+            if (tree_level != null && tree_level < 0)
+                throw new IllegalArgumentException("레벨을 입력해주세요!");
+        }
+
+        /**
+         * If there are no values to update, then don't try to update the database
+         */
+        if (values.size() == 0)
+            return 0;
+
+        /**
+         * Otherwise, get the writable database to update the data
+         */
+        SQLiteDatabase database = mDBHelper.getWritableDatabase();
+
+        /**
+         * Perform the update on the database and get the number of rows affected
+         */
+        int rowsUpdated = database.update(TreeContract.MainEntry.TABLE_NAME, values, selection, selectionArgs);
+        /**
+         * If 1 or more rows were updated, then notify all listeners that the data at the given URI has changed
+         */
+        if (rowsUpdated != 0)
+            getContext().getContentResolver().notifyChange(uri, null);
+
+        /**
+         * Return the number of rows updated
+         */
+        return rowsUpdated;
     }
 
+    /**
+     * Insert a diary content into the database with the given content values
+     *
+     * @return a new content URI for the specific row in the database
+     */
     private Uri insertDiary(Uri uri, ContentValues values) {
-        return null;
+        String diary_title = values.getAsString(TreeContract.DiaryEntry.COLUMN_DIARY_TITLE);
+        if (diary_title == null)
+            throw new IllegalArgumentException("제목을 입력해주세요!");
+
+        String diary_content = values.getAsString(TreeContract.DiaryEntry.COLUMN_DIARY_CONTENT);
+        if (diary_content == null)
+            throw new IllegalArgumentException("내용을 입력해주세요!");
+
+        SQLiteDatabase database = mDBHelper.getWritableDatabase();
+        long id = database.insert(TreeContract.DiaryEntry.TABLE_NAME, null, values);
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        if (id == -1)
+            return null;
+
+        return ContentUris.withAppendedId(uri, id);
     }
 
+    /**
+     * Update diary contents in the database with the given content values
+     *
+     * @return the number of rows that were successfully updated
+     */
     private int updateDiary(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        if (values.containsKey(TreeContract.DiaryEntry.COLUMN_DIARY_TITLE)) {
+            String diary_title = values.getAsString(TreeContract.DiaryEntry.COLUMN_DIARY_TITLE);
+            if (diary_title == null)
+                throw new IllegalArgumentException("이름을 입력해주세요!");
+        }
+
+        if (values.containsKey(TreeContract.DiaryEntry.COLUMN_DIARY_CONTENT)) {
+            String diary_content = values.getAsString(TreeContract.DiaryEntry.COLUMN_DIARY_CONTENT);
+            if (diary_content == null)
+                throw new IllegalArgumentException("내용을 입력해주세요!");
+        }
+
+        if (values.containsKey(TreeContract.DiaryEntry.COLUMN_DIARY_IMAGE)) {
+            byte[] diary_image = values.getAsByteArray(TreeContract.DiaryEntry.COLUMN_DIARY_IMAGE);
+            if (diary_image == null)
+                throw new IllegalArgumentException("사진을 등록해주세요!");
+        }
+
+        if (values.size() == 0)
+            return 0;
+
+        SQLiteDatabase database = mDBHelper.getWritableDatabase();
+
+        int rowsUpdated = database.update(TreeContract.DiaryEntry.TABLE_NAME, values, selection, selectionArgs);
+        if (rowsUpdated != 0)
+            getContext().getContentResolver().notifyChange(uri, null);
+
+        return rowsUpdated;
     }
 
+    /**
+     * Insert a donation content into the database with the given content values
+     *
+     * @return a new content URI for the specific row in the database
+     */
     private Uri insertDonation(Uri uri, ContentValues values) {
-        return null;
+        String donation_title = values.getAsString(TreeContract.DonationEntry.COLUMN_DONATION_TITLE);
+        if (donation_title == null)
+            throw new IllegalArgumentException("제목을 입력해주세요!");
+
+        byte[] donation_picture = values.getAsByteArray(TreeContract.DonationEntry.COLUMN_DONATION_IMAGE);
+        if (donation_picture == null)
+            throw new IllegalArgumentException("사진을 등록해주세요!");
+
+        SQLiteDatabase database = mDBHelper.getWritableDatabase();
+        long id = database.insert(TreeContract.DonationEntry.TABLE_NAME, null, values);
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        if (id == -1)
+            return null;
+
+        return ContentUris.withAppendedId(uri, id);
     }
 
+    /**
+     * Update donation contents in the database with the given content values
+     *
+     * @return the number of rows that were successfully updated
+     */
     private int updateDonation(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        if (values.containsKey(TreeContract.DonationEntry.COLUMN_DONATION_TITLE)) {
+            String donation_title = values.getAsString(TreeContract.DonationEntry.COLUMN_DONATION_TITLE);
+            if (donation_title == null)
+                throw new IllegalArgumentException("제목을 입력해주세요!");
+        }
+
+        if (values.containsKey(TreeContract.DonationEntry.COLUMN_DONATION_MONEY)) {
+            Integer donation_money = values.getAsInteger(TreeContract.DonationEntry.COLUMN_DONATION_MONEY);
+            if (donation_money != null && donation_money < 0)
+                throw new IllegalArgumentException("금액을 입력해주세요!");
+        }
+
+        if (values.containsKey(TreeContract.DonationEntry.COLUMN_DONATION_IMAGE)) {
+            byte[] donation_picture = values.getAsByteArray(TreeContract.DonationEntry.COLUMN_DONATION_IMAGE);
+            if (donation_picture == null)
+                throw new IllegalArgumentException("사진을 등록해주세요!");
+        }
+
+        if (values.size() == 0)
+            return 0;
+
+        SQLiteDatabase database = mDBHelper.getWritableDatabase();
+
+        int rowsUpdated = database.update(TreeContract.DonationEntry.TABLE_NAME, values, selection, selectionArgs);
+        if (rowsUpdated != 0)
+            getContext().getContentResolver().notifyChange(uri, null);
+
+        return rowsUpdated;
     }
 
+    /**
+     * Insert a step value into the database with the given content values
+     *
+     * @return a new content URI for the specific row in the database
+     */
     private Uri insertStep(Uri uri, ContentValues values) {
-        return null;
+        String steps_date = values.getAsString(TreeContract.StepsEntry.COLUMN_STEPS_DATE);
+        if (steps_date == null)
+            throw new IllegalArgumentException("날짜를 선택해주세요!");
+
+        SQLiteDatabase database = mDBHelper.getWritableDatabase();
+        long id = database.insert(TreeContract.StepsEntry.TABLE_NAME, null, values);
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        if (id == -1)
+            return null;
+
+        return ContentUris.withAppendedId(uri, id);
     }
 
+    /**
+     * Update step values in the database with the given content values
+     *
+     * @return the number of rows that were successfully updated
+     */
     private int updateStep(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        if (values.containsKey(TreeContract.StepsEntry.COLUMN_STEPS_DATE)) {
+            String steps_date = values.getAsString(TreeContract.StepsEntry.COLUMN_STEPS_DATE);
+            if (steps_date == null)
+                throw new IllegalArgumentException("날짜를 선택해주세요!");
+        }
+
+        if (values.containsKey(TreeContract.StepsEntry.COLUMN_STEPS_VALUE)) {
+            Integer steps_value = values.getAsInteger(TreeContract.StepsEntry.COLUMN_STEPS_VALUE);
+            if (steps_value != null && steps_value < 0)
+                throw new IllegalArgumentException("걸음수를 입력해주세요!");
+        }
+
+        if (values.size() == 0)
+            return 0;
+
+        SQLiteDatabase database = mDBHelper.getWritableDatabase();
+
+        int rowsUpdated = database.update(TreeContract.StepsEntry.TABLE_NAME, values, selection, selectionArgs);
+        if (rowsUpdated != 0)
+            getContext().getContentResolver().notifyChange(uri, null);
+
+        return rowsUpdated;
     }
 }
