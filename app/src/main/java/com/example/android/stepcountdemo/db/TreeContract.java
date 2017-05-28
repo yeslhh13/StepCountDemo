@@ -14,21 +14,21 @@ public final class TreeContract {
     /**
      * Name for the entire content provider
      */
-    private static final String CONTENT_AUTHORITY = "com.example.android.stepcountdemo";
+    public static final String CONTENT_AUTHORITY = "com.example.android.stepcountdemo";
     /**
      * Possible path appended to base content URI for possible URI
      */
-    private static final String PATH_MAIN = "tree";
-    private static final String PATH_DIARY = "diary";
-    private static final String PATH_DONATION = "donation";
-    private static final String PATH_STEPS = "steps";
+    public static final String PATH_MAIN = "tree";
+    public static final String PATH_DIARY = "diary";
+    public static final String PATH_DONATION = "donation";
+    public static final String PATH_STEPS = "steps";
     /**
      * Use {@link #CONTENT_AUTHORITY} to create the base of all URI's which will use to contract the content provider
      */
-    private static final Uri CONTENT_URI_MAIN = Uri.parse("content://" + CONTENT_AUTHORITY + "/" + PATH_MAIN);
-    private static final Uri CONTENT_URI_DIARY = Uri.parse("content://" + CONTENT_AUTHORITY + "/" + PATH_DIARY);
-    private static final Uri CONTENT_URI_DONATION = Uri.parse("content://" + CONTENT_AUTHORITY + "/" + PATH_DONATION);
-    private static final Uri CONTENT_URI_STEPS = Uri.parse("content://" + CONTENT_AUTHORITY + "/" + PATH_STEPS);
+    public static final Uri CONTENT_URI_MAIN = Uri.parse("content://" + CONTENT_AUTHORITY + "/" + PATH_MAIN);
+    public static final Uri CONTENT_URI_DIARY = Uri.parse("content://" + CONTENT_AUTHORITY + "/" + PATH_DIARY);
+    public static final Uri CONTENT_URI_DONATION = Uri.parse("content://" + CONTENT_AUTHORITY + "/" + PATH_DONATION);
+    public static final Uri CONTENT_URI_STEPS = Uri.parse("content://" + CONTENT_AUTHORITY + "/" + PATH_STEPS);
 
     /**
      * To prevent from accidentally instantiating the contract class
@@ -45,6 +45,10 @@ public final class TreeContract {
          * The MIME type of the {@link #CONTENT_URI} for a list of trees
          */
         public static final String CONTENT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MAIN;
+        /**
+         * The MIME type of the {@link #CONTENT_URI} for a single tree
+         */
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MAIN;
         /**
          * Name of DB table for main trees
          */
@@ -73,6 +77,10 @@ public final class TreeContract {
          */
         public static final String CONTENT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_DIARY;
         /**
+         * The MIME type of the {@link #CONTENT_URI} for a single diary
+         */
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_DIARY;
+        /**
          * Name of DB table for steps
          */
         public static final String TABLE_NAME = PATH_DIARY;
@@ -97,6 +105,10 @@ public final class TreeContract {
          */
         public static final String CONTENT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_DONATION;
         /**
+         * The MIME type of the {@link #CONTENT_URI} for a single donation
+         */
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_DONATION;
+        /**
          * Name of DB table for donation
          */
         public static final String TABLE_NAME = PATH_DONATION;
@@ -120,6 +132,10 @@ public final class TreeContract {
          * The MIME type of the {@link #CONTENT_URI} for a list of steps
          */
         public static final String CONTENT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STEPS;
+        /**
+         * The MIME type of the {@link #CONTENT_URI} for a single step
+         */
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STEPS;
         /**
          * Name of DB table for steps
          */
