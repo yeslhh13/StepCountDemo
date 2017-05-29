@@ -40,8 +40,7 @@ public class StepCountReceiver extends BroadcastReceiver {
             context.startService(i);
         }
 
-        if (intent.getAction().equals(Intent.ACTION_DATE_CHANGED)) {
-            //TODO:Save the Step Count variable to the database
+        if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED) || intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
             /**
              * temporary code
              */
