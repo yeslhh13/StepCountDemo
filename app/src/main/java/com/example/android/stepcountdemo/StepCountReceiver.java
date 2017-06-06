@@ -1,6 +1,7 @@
 package com.example.android.stepcountdemo;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -40,15 +41,17 @@ public class StepCountReceiver extends BroadcastReceiver {
             context.startService(i);
         }
 
-        if (intent.getAction().equals(Intent.ACTION_DATE_CHANGED)) {
-            /**
-             * temporary code
-             */
+        if (intent.getAction().equals("ACTION.MIDNIGHT.StepCountService")) {
             mGlobal = (GlobalVariable) context.getApplicationContext();
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class),
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                    .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("자정 알림")
+                    .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("자정 알림").setAutoCancel(true)
+                    .setWhen(System.currentTimeMillis()).setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentText("어제는 " + String.valueOf(mGlobal.getStepCount()) + "걸음 걸으셨습니다!")
-                    .setDefaults(NotificationCompat.DEFAULT_VIBRATE).setAutoCancel(true).setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                    .setDefaults(NotificationCompat.DEFAULT_VIBRATE).setContentIntent(pendingIntent);
             mGlobal.resetStepCount();
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

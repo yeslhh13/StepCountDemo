@@ -178,6 +178,4 @@ public class StepCountService extends Service implements SensorEventListener {
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
     }
-
-
 }

@@ -1,5 +1,7 @@
 package com.example.android.stepcountdemo;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +10,8 @@ import android.widget.TabHost;
 import com.example.android.stepcountdemo.calendar.CalendarActivity;
 import com.example.android.stepcountdemo.diary.DiaryActivity;
 import com.example.android.stepcountdemo.setting.SettingActivity;
+
+import java.util.Calendar;
 
 /**
  * Created by Kat on 2017-04-28
@@ -65,5 +69,19 @@ public class MainActivity extends TabActivity {
          * Set the main tab to first tab(TreeActivity.class)
          */
         tabHost.setCurrentTab(0);
+
+        registerMidnightAlarm();
+    }
+
+    private void registerMidnightAlarm() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE) + 1, 0, 0, 0);
+
+        Intent intent = new Intent(getApplicationContext(), StepCountReceiver.class)
+                .setAction("ACTION.MIDNIGHT.StepCountService");
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 }

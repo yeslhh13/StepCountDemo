@@ -18,6 +18,10 @@ public class GlobalVariable extends Application {
         return mStepCount;
     }
 
+    public void setStepCount(int stepCount) {
+        this.mStepCount = stepCount;
+    }
+
     public void increaseStepCount() {
         this.mStepCount++;
     }
