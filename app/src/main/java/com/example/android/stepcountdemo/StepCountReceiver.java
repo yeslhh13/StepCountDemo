@@ -40,7 +40,7 @@ public class StepCountReceiver extends BroadcastReceiver {
             context.startService(i);
         }
 
-        if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED) || intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
+        if (intent.getAction().equals(Intent.ACTION_DATE_CHANGED)) {
             /**
              * temporary code
              */
