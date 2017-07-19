@@ -25,10 +25,7 @@ public final class TreeContract {
     /**
      * Use {@link #CONTENT_AUTHORITY} to create the base of all URI's which will use to contract the content provider
      */
-    public static final Uri CONTENT_URI_MAIN = Uri.parse("content://" + CONTENT_AUTHORITY + "/" + PATH_MAIN);
-    public static final Uri CONTENT_URI_DIARY = Uri.parse("content://" + CONTENT_AUTHORITY + "/" + PATH_DIARY);
-    public static final Uri CONTENT_URI_DONATION = Uri.parse("content://" + CONTENT_AUTHORITY + "/" + PATH_DONATION);
-    public static final Uri CONTENT_URI_STEPS = Uri.parse("content://" + CONTENT_AUTHORITY + "/" + PATH_STEPS);
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     /**
      * To prevent from accidentally instantiating the contract class
@@ -60,7 +57,7 @@ public final class TreeContract {
         /**
          * The content Uri to access the tree data in the provider
          */
-        private static final Uri CONTENT_URI = Uri.withAppendedPath(CONTENT_URI_MAIN, PATH_MAIN);
+        private static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_MAIN);
     }
 
     /**
@@ -71,7 +68,7 @@ public final class TreeContract {
         /**
          * The content Uri to access the diary data in the provider
          */
-        public static final Uri CONTENT_URI = Uri.withAppendedPath(CONTENT_URI_DIARY, PATH_DIARY);
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_DIARY);
         /**
          * The MIME type of the {@link #CONTENT_URI} for a list of diary
          */
@@ -99,7 +96,7 @@ public final class TreeContract {
         /**
          * The content Uri to access the donation data in the provider
          */
-        public static final Uri CONTENT_URI = Uri.withAppendedPath(CONTENT_URI_DONATION, PATH_DONATION);
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_DONATION);
         /**
          * The MIME type of the {@link #CONTENT_URI} for a list of donations
          */
@@ -127,7 +124,7 @@ public final class TreeContract {
         /**
          * The content Uri to access the steps data in the provider
          */
-        public static final Uri CONTENT_URI = Uri.withAppendedPath(CONTENT_URI_STEPS, PATH_STEPS);
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_STEPS);
         /**
          * The MIME type of the {@link #CONTENT_URI} for a list of steps
          */
