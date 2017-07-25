@@ -119,8 +119,6 @@ public class StepCountReceiver extends BroadcastReceiver {
                 cursor.moveToFirst();
                 int existing_value = cursor.getInt(0);
 
-                cursor.close();
-
                 values.put(TreeContract.StepsEntry.COLUMN_STEPS_VALUE, existing_value + step_count);
                 String selection = TreeContract.StepsEntry.COLUMN_STEPS_DATE + " =?";
                 String[] selectionArgs = new String[]{date_value};
@@ -157,9 +155,6 @@ public class StepCountReceiver extends BroadcastReceiver {
         boolean hasStepRecord = false;
         if (cursor.moveToFirst())
             hasStepRecord = true;
-
-        cursor.close();
-        db.close();
 
         return hasStepRecord;
     }

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.widget.TabHost;
 
 import com.example.android.stepcountdemo.calendar.CalendarActivity;
-import com.example.android.stepcountdemo.diary.DiaryActivity;
 import com.example.android.stepcountdemo.setting.SettingActivity;
 
 import java.util.Calendar;
@@ -37,13 +36,13 @@ public class MainActivity extends TabActivity {
         spec = tabHost.newTabSpec(getString(R.string.tab_first)).setIndicator(getString(R.string.tab_first)).setContent(intent);
         tabHost.addTab(spec);
 
-        /**
-         * Create diary tab
-         */
-        intent = new Intent(this, DiaryActivity.class);
-        spec = tabHost.newTabSpec(getString(R.string.tab_second)).setIndicator(getString(R.string.tab_second)).setContent(intent);
-        tabHost.addTab(spec);
-
+//        /**
+//         * Create diary tab
+//         */
+//        intent = new Intent(this, DiaryActivity.class);
+//        spec = tabHost.newTabSpec(getString(R.string.tab_second)).setIndicator(getString(R.string.tab_second)).setContent(intent);
+//        tabHost.addTab(spec);
+//
         /**
          * Create calendar tab
          */
@@ -51,13 +50,13 @@ public class MainActivity extends TabActivity {
         spec = tabHost.newTabSpec(getString(R.string.tab_third)).setIndicator(getString(R.string.tab_third)).setContent(intent);
         tabHost.addTab(spec);
 
-        /**
-         * Create donation tab
-         */
-        intent = new Intent(this, DonationActivity.class);
-        spec = tabHost.newTabSpec(getString(R.string.tab_fourth)).setIndicator(getString(R.string.tab_fourth)).setContent(intent);
-        tabHost.addTab(spec);
-
+//        /**
+//         * Create donation tab
+//         */
+//        intent = new Intent(this, DonationActivity.class);
+//        spec = tabHost.newTabSpec(getString(R.string.tab_fourth)).setIndicator(getString(R.string.tab_fourth)).setContent(intent);
+//        tabHost.addTab(spec);
+//
         /**
          * Create setting tab (환경설정 단어 넣어도 되는데 심심해서 해봤어...ㅎ..바꿔도 돼.........)
          */
