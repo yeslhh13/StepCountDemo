@@ -54,10 +54,10 @@ public class TreeProvider extends ContentProvider {
         /**
          * Provide access to SINGLE row of the table
          */
-        mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_MAIN, MAIN_ID);
-        mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_DIARY, DIARY_ID);
-        mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_DONATION, DONATION_ID);
-        mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_STEPS, STEPS_ID);
+        mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_MAIN + "/#", MAIN_ID);
+        mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_DIARY + "/#", DIARY_ID);
+        mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_DONATION + "/#", DONATION_ID);
+        mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_STEPS + "/#", STEPS_ID);
     }
 
     /**

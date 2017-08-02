@@ -51,6 +51,24 @@ public class StepCountReceiver extends BroadcastReceiver {
         }
 
         /**
+         * When the app is destroyed, save the steps data to the database
+         */
+        if (intent.getAction().equals("ACTION.DESTROY.StepCountService")) {
+            mGlobal = (GlobalVariable) context.getApplicationContext();
+
+            ContentValues values = new ContentValues();
+            values.put(TreeContract.StepsEntry.COLUMN_STEPS_DATE, intent.getStringExtra("date"));
+            values.put(TreeContract.StepsEntry.COLUMN_STEPS_VALUE, mGlobal.getStepCount());
+
+            if (intent.getData() != null) {
+                Uri contentUri = intent.getData();
+                context.getContentResolver().update(contentUri, values, null, null);
+            } else {
+                context.getContentResolver().insert(TreeContract.StepsEntry.CONTENT_URI, values);
+            }
+        }
+
+        /**
          * When midnight, save the steps data and alert to user
          */
         if (intent.getAction().equals("ACTION.MIDNIGHT.StepCountService")) {
@@ -99,25 +117,17 @@ public class StepCountReceiver extends BroadcastReceiver {
             ContentValues values = new ContentValues();
 
             /**
-             * Check if this is supposed to be a new steps value
+             * This is an existing steps value, so update the value
+             * and pass in the new {@link ContentValues}
              */
             if (hasStepRecord(context, date_value)) {
-                values.put(TreeContract.StepsEntry.COLUMN_STEPS_VALUE, step_count);
-                values.put(TreeContract.StepsEntry.COLUMN_STEPS_DATE, date_value);
-
-                Uri newUri = context.getContentResolver().insert(contentUri, values);
-                if (newUri == null)
-                    Log.e("Midnight Insertion", "failed");
-            } else {
-                /**
-                 * This is an existing steps value, so update the value
-                 * and pass in the new {@link ContentValues}
-                 */
                 Cursor cursor = db.rawQuery("SELECT " + TreeContract.StepsEntry.COLUMN_STEPS_VALUE
                         + " FROM " + TreeContract.StepsEntry.TABLE_NAME + " WHERE "
                         + TreeContract.StepsEntry.COLUMN_STEPS_DATE + "='" + date_value + "';", null);
                 cursor.moveToFirst();
                 int existing_value = cursor.getInt(0);
+
+                cursor.close();
 
                 values.put(TreeContract.StepsEntry.COLUMN_STEPS_VALUE, existing_value + step_count);
                 String selection = TreeContract.StepsEntry.COLUMN_STEPS_DATE + " =?";
@@ -126,6 +136,16 @@ public class StepCountReceiver extends BroadcastReceiver {
                 int rowsAffected = context.getContentResolver().update(contentUri, values, selection, selectionArgs);
                 if (rowsAffected == 0)
                     Log.e("Midnight Update", "failed");
+            } else {
+                /**
+                 * Check if this is supposed to be a new steps value
+                 */
+                values.put(TreeContract.StepsEntry.COLUMN_STEPS_VALUE, step_count);
+                values.put(TreeContract.StepsEntry.COLUMN_STEPS_DATE, date_value);
+
+                Uri newUri = context.getContentResolver().insert(contentUri, values);
+                if (newUri == null)
+                    Log.e("Midnight Insertion", "failed");
             }
             mGlobal.resetStepCount();
 
@@ -155,6 +175,8 @@ public class StepCountReceiver extends BroadcastReceiver {
         boolean hasStepRecord = false;
         if (cursor.moveToFirst())
             hasStepRecord = true;
+
+        cursor.close();
 
         return hasStepRecord;
     }

@@ -3,11 +3,17 @@ package com.example.android.stepcountdemo;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TabActivity;
+import android.content.ContentUris;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.TabHost;
 
 import com.example.android.stepcountdemo.calendar.CalendarActivity;
+import com.example.android.stepcountdemo.db.TreeContract;
+import com.example.android.stepcountdemo.db.TreeDBHelper;
 import com.example.android.stepcountdemo.setting.SettingActivity;
 
 import java.util.Calendar;
@@ -85,5 +91,56 @@ public class MainActivity extends TabActivity {
          */
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent intent;
+
+        /**
+         * Current calendar value
+         */
+        Calendar calendar = Calendar.getInstance();
+        String date_value = String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH))
+                + String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+
+        if (getContentUri() == null)
+            sendBroadcast(new Intent("ACTION.DESTROY.StepCountService").putExtra("date", date_value));
+        else {
+            intent = new Intent(getApplicationContext(), StepCountReceiver.class)
+                    .setAction("ACTION.DESTROY.StepCountService").setData(getContentUri()).putExtra("date", date_value);
+            sendBroadcast(intent);
+        }
+    }
+
+    private Uri getContentUri() {
+        TreeDBHelper treeDBHelper = new TreeDBHelper(this);
+        SQLiteDatabase db = treeDBHelper.getReadableDatabase();
+        Uri contentUri = TreeContract.StepsEntry.CONTENT_URI;
+
+        /**
+         * Current calendar value
+         */
+        Calendar calendar = Calendar.getInstance();
+        String date_value = String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH))
+                + String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+
+        Cursor cursor = db.rawQuery("SELECT " + TreeContract.StepsEntry._ID
+                + " FROM " + TreeContract.StepsEntry.TABLE_NAME + " WHERE "
+                + TreeContract.StepsEntry.COLUMN_STEPS_DATE + "='" + date_value + "';", null);
+
+        int id;
+
+        if (cursor.getCount() == 0)
+            return null;
+        else {
+            cursor.moveToFirst();
+            id = cursor.getInt(0);
+        }
+
+        cursor.close();
+
+        return ContentUris.withAppendedId(contentUri, id);
     }
 }
