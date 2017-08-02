@@ -60,22 +60,14 @@ public class StepCountService extends Service implements SensorEventListener {
         Log.i("StepCountService", "onCreate");
         super.onCreate();
 
-        /**
-         * Get the {@link SensorManager} instance with the argument {@link SENSOR_SERVICE}
-         */
+        // Get the {@link SensorManager} instance with the argument {@link SENSOR_SERVICE}
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        /**
-         * Get the default TYPE_STEP_COUNTER sensor
-         */
+        // Get the default TYPE_STEP_COUNTER sensor
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        /**
-         * Get the {@link GlobalVariable} instance
-         */
+        // Get the {@link GlobalVariable} instance
         mGlobalVariable = (GlobalVariable) getApplication();
 
-        /**
-         * Set and start {@link #mCountDownTimer}
-         */
+        // Set and start {@link #mCountDownTimer}
         setCountDownTimer();
         mCountDownTimer.start();
     }
@@ -136,9 +128,7 @@ public class StepCountService extends Service implements SensorEventListener {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent1, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        /**
-         * Show the notification when using startForeground()
-         */
+        // Show the notification when using startForeground()
         Notification notification = new Notification.Builder(getApplicationContext()).setContentText("App Running")
                 .setSmallIcon(R.mipmap.ic_launcher).setContentTitle(getString(R.string.app_name)).setContentIntent(pendingIntent)
                 .build();

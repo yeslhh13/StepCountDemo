@@ -32,27 +32,21 @@ public class StepCountReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i("StepCountReceiver", "onReceive");
-        /**
-         * When the service is killed, register the service again by the alarm
-         */
+        // When the service is killed, register the service again by the alarm
         if (intent.getAction().equals("ACTION.RESTART.StepCountService")) {
             Log.i("StepCountReceiver", "ACTION.RESTART.StepCountService");
             Intent i = new Intent(context, StepCountService.class);
             context.startService(i);
         }
 
-        /**
-         * Register the service again when the phone is booted
-         */
+        // Register the service again when the phone is booted
         if (intent.getAction().equals(intent.ACTION_BOOT_COMPLETED)) {
             Log.i("StepCountReceiver", "ACTION_BOOT_COMPLETED");
             Intent i = new Intent(context, StepCountService.class);
             context.startService(i);
         }
 
-        /**
-         * When the app is destroyed, save the steps data to the database
-         */
+        // When the app is destroyed, save the steps data to the database
         if (intent.getAction().equals("ACTION.DESTROY.StepCountService")) {
             mGlobal = (GlobalVariable) context.getApplicationContext();
 
@@ -68,9 +62,7 @@ public class StepCountReceiver extends BroadcastReceiver {
             }
         }
 
-        /**
-         * When midnight, save the steps data and alert to user
-         */
+        // When midnight, save the steps data and alert to user
         if (intent.getAction().equals("ACTION.MIDNIGHT.StepCountService")) {
             final TreeDBHelper dbHelper = new TreeDBHelper(context.getApplicationContext());
             SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -87,15 +79,11 @@ public class StepCountReceiver extends BroadcastReceiver {
                     .setContentText("어제는 " + String.valueOf(mGlobal.getStepCount()) + "걸음 걸으셨습니다!")
                     .setDefaults(NotificationCompat.DEFAULT_VIBRATE).setContentIntent(pendingIntent);
 
-            /**
-             * Current calendar value
-             */
+            // Current calendar value
             Calendar calendar = Calendar.getInstance();
             String date_value = String.valueOf(calendar.get(Calendar.YEAR));
 
-            /**
-             * If today is the first day of the month, check if yesterday was 30th or the 31th
-             */
+            // If today is the first day of the month, check if yesterday was 30th or the 31th
             if (String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)).equals("1")) {
                 String month = String.valueOf(calendar.get(Calendar.MONTH));
                 date_value += month;
@@ -111,15 +99,11 @@ public class StepCountReceiver extends BroadcastReceiver {
 
             int step_count = mGlobal.getStepCount();
 
-            /**
-             * Create a {@link ContentValues} object where column names are the keys and product attributes from the editor are the values
-             */
+            // Create a {@link ContentValues} object where column names are the keys and product attributes from the editor are the values
             ContentValues values = new ContentValues();
 
-            /**
-             * This is an existing steps value, so update the value
-             * and pass in the new {@link ContentValues}
-             */
+            // This is an existing steps value, so update the value
+            // and pass in the new {@link ContentValues}
             if (hasStepRecord(context, date_value)) {
                 Cursor cursor = db.rawQuery("SELECT " + TreeContract.StepsEntry.COLUMN_STEPS_VALUE
                         + " FROM " + TreeContract.StepsEntry.TABLE_NAME + " WHERE "
@@ -137,9 +121,7 @@ public class StepCountReceiver extends BroadcastReceiver {
                 if (rowsAffected == 0)
                     Log.e("Midnight Update", "failed");
             } else {
-                /**
-                 * Check if this is supposed to be a new steps value
-                 */
+                // Check if this is supposed to be a new steps value
                 values.put(TreeContract.StepsEntry.COLUMN_STEPS_VALUE, step_count);
                 values.put(TreeContract.StepsEntry.COLUMN_STEPS_DATE, date_value);
 
@@ -166,10 +148,8 @@ public class StepCountReceiver extends BroadcastReceiver {
         String selectString = "SELECT * FROM " + TreeContract.StepsEntry.TABLE_NAME + " WHERE "
                 + TreeContract.StepsEntry.COLUMN_STEPS_DATE + " =?";
 
-        /**
-         * Add the String you are searching by here.
-         * Put it in an array to avoid an unrecognized token error
-         */
+        // Add the String you are searching by here.
+        // Put it in an array to avoid an unrecognized token error
         Cursor cursor = db.rawQuery(selectString, new String[]{date});
 
         boolean hasStepRecord = false;

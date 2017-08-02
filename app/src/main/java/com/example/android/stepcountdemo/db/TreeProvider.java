@@ -38,22 +38,16 @@ public class TreeProvider extends ContentProvider {
      */
     private static final UriMatcher mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-    /**
-     * Static initializer
-     * Run the first time anything is called from this class
-     */
+    // Static initializer
+    // Run the first time anything is called from this class
     static {
-        /**
-         * Provide access to MULTIPLE rows of the table
-         */
+        // Provide access to MULTIPLE rows of the table
         mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_MAIN, MAIN);
         mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_DIARY, DIARY);
         mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_DONATION, DONATION);
         mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_STEPS, STEPS);
 
-        /**
-         * Provide access to SINGLE row of the table
-         */
+        // Provide access to SINGLE row of the table
         mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_MAIN + "/#", MAIN_ID);
         mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_DIARY + "/#", DIARY_ID);
         mUriMatcher.addURI(TreeContract.CONTENT_AUTHORITY, TreeContract.PATH_DONATION + "/#", DONATION_ID);
@@ -74,29 +68,19 @@ public class TreeProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        /**
-         * Get readable database
-         */
+        // Get readable database
         SQLiteDatabase database = mDBHelper.getReadableDatabase();
-        /**
-         * This will hold the result of the query
-         */
+        // This will hold the result of the query
         Cursor cursor;
 
-        /**
-         * Figure out if the URI matcher can match the URI to a specific code
-         */
+        // Figure out if the URI matcher can match the URI to a specific code
         int match = mUriMatcher.match(uri);
 
-        /**
-         * Query the product table directly with the given projection, selection, selection arguments, and sort order
-         *
-         * If the match is #MAIN, #DIARY, #DONATION, #STEPS the cursor could contain multiple rows of the table
-         *
-         * If not(_ID), extract the ID from the URI and for every "?" in the selection,
-         * we need to have an element in the selection arguments that will fill in the "?"
-         * Since we have 1 question mark in the selection, we have 1 String in the selection arguments' String array
-         */
+        // Query the product table directly with the given projection, selection, selection arguments, and sort order
+        // If the match is #MAIN, #DIARY, #DONATION, #STEPS the cursor could contain multiple rows of the table
+        // If not(_ID), extract the ID from the URI and for every "?" in the selection,
+        // we need to have an element in the selection arguments that will fill in the "?"
+        // Since we have 1 question mark in the selection, we have 1 String in the selection arguments' String array
         switch (match) {
             case MAIN:
                 cursor = database.query(TreeContract.MainEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
@@ -146,10 +130,8 @@ public class TreeProvider extends ContentProvider {
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
         }
 
-        /**
-         * Set notification URI on the cursor
-         * If the data at this URI changes, then we know we need to update the Cursor
-         */
+        // Set notification URI on the cursor
+        // If the data at this URI changes, then we know we need to update the Cursor
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
@@ -200,20 +182,15 @@ public class TreeProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        /**
-         * Get writable database
-         */
+        // Get writable database
         SQLiteDatabase database = mDBHelper.getWritableDatabase();
-        /**
-         * Track the number of rows that were deleted
-         */
+        // Track the number of rows that were deleted
         int rowsDeleted;
 
         final int match = mUriMatcher.match(uri);
-        /**
-         * If the match is #MAIN, #DIARY, #DONATION, #STEPS delete all rows that match the selection and selection arguments
-         * If not(_ID), delete a single row given by the ID in the URI
-         */
+
+        // If the match is #MAIN, #DIARY, #DONATION, #STEPS delete all rows that match the selection and selection arguments
+        // If not(_ID), delete a single row given by the ID in the URI
         switch (match) {
             case MAIN:
                 rowsDeleted = database.delete(TreeContract.MainEntry.TABLE_NAME, selection, selectionArgs);
@@ -251,25 +228,19 @@ public class TreeProvider extends ContentProvider {
                 throw new IllegalArgumentException("Deletion not supported for " + uri);
         }
 
-        /**
-         * If 1 or more rows were deleted, then notify all listeners that the data at the given URI has changed
-         */
+        // If 1 or more rows were deleted, then notify all listeners that the data at the given URI has changed
         if (rowsDeleted != 0)
             getContext().getContentResolver().notifyChange(uri, null);
 
-        /**
-         * Return the number of rows deleted
-         */
+        // Return the number of rows deleted
         return rowsDeleted;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         final int match = mUriMatcher.match(uri);
-        /**
-         * For the _ID matcher, extract the ID from the URI to know which row to update
-         * Selection will be "_ID=?" and selection arguments will be a String array containing the actual ID
-         */
+        // For the _ID matcher, extract the ID from the URI to know which row to update
+        // Selection will be "_ID=?" and selection arguments will be a String array containing the actual ID
         switch (match) {
             case MAIN:
                 return updateTree(uri, values, selection, selectionArgs);
@@ -306,33 +277,23 @@ public class TreeProvider extends ContentProvider {
      * @return a new content URI for the specific row in the database
      */
     private Uri insertTree(Uri uri, ContentValues values) {
-        /**
-         * Check that the tree type is not null
-         */
+        // Check that the tree type is not null
         String tree_type = values.getAsString(TreeContract.MainEntry.COLUMN_TREE_TYPE);
         if (tree_type == null)
             throw new IllegalArgumentException("트리의 종류를 선택해주세요!");
 
-        /**
-         * Get the writable database
-         */
+        // Get the writable database
         SQLiteDatabase database = mDBHelper.getWritableDatabase();
-        /**
-         * Insert the new tree with the given values
-         * If the ID is -1, then the insertion is failed
-         */
+        // Insert the new tree with the given values
+        // If the ID is -1, then the insertion is failed
         long id = database.insert(TreeContract.MainEntry.TABLE_NAME, null, values);
         if (id == -1)
             return null;
 
-        /**
-         * Notify all listeners that the data has changed for the tree content URI
-         */
+        // Notify all listeners that the data has changed for the tree content URI
         getContext().getContentResolver().notifyChange(uri, null);
 
-        /**
-         * Return the new URI withe the ID of the newly inserted row appended at the end
-         */
+        // Return the new URI withe the ID of the newly inserted row appended at the end
         return ContentUris.withAppendedId(uri, id);
     }
 
@@ -342,9 +303,7 @@ public class TreeProvider extends ContentProvider {
      * @return the number of rows that were successfully updated
      */
     private int updateTree(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        /**
-         * If the key is present, check that the value is not null
-         */
+        // If the key is present, check that the value is not null
         if (values.containsKey(TreeContract.MainEntry.COLUMN_TREE_NAME)) {
             String tree_name = values.getAsString(TreeContract.MainEntry.COLUMN_TREE_NAME);
             if (tree_name == null)
@@ -363,30 +322,21 @@ public class TreeProvider extends ContentProvider {
                 throw new IllegalArgumentException("레벨을 입력해주세요!");
         }
 
-        /**
-         * If there are no values to update, then don't try to update the database
-         */
+        // If there are no values to update, then don't try to update the database
         if (values.size() == 0)
             return 0;
 
-        /**
-         * Otherwise, get the writable database to update the data
-         */
+        // Otherwise, get the writable database to update the data
         SQLiteDatabase database = mDBHelper.getWritableDatabase();
 
-        /**
-         * Perform the update on the database and get the number of rows affected
-         */
+        // Perform the update on the database and get the number of rows affected
         int rowsUpdated = database.update(TreeContract.MainEntry.TABLE_NAME, values, selection, selectionArgs);
-        /**
-         * If 1 or more rows were updated, then notify all listeners that the data at the given URI has changed
-         */
+
+        // If 1 or more rows were updated, then notify all listeners that the data at the given URI has changed
         if (rowsUpdated != 0)
             getContext().getContentResolver().notifyChange(uri, null);
 
-        /**
-         * Return the number of rows updated
-         */
+        // Return the number of rows updated
         return rowsUpdated;
     }
 

@@ -19,6 +19,10 @@ import android.widget.TextView;
 
 public class TreeActivity extends AppCompatActivity {
     /**
+     * Handler to show the user's step count in real time
+     */
+    private static Handler mHandler;
+    /**
      * TextView to show step count to the user
      */
     private TextView stepCountView;
@@ -34,10 +38,6 @@ public class TreeActivity extends AppCompatActivity {
      * ImageView to show the tree state to the user
      */
     private ImageView treeImage;
-    /**
-     * Handler to show the user's step count in real time
-     */
-    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,23 +47,17 @@ public class TreeActivity extends AppCompatActivity {
         stepCountView = (TextView) findViewById(R.id.step_count);
         treeImage = (ImageView) findViewById(R.id.treeImage);
 
-        /**
-         * Get the {@link GlobalVariable} instance
-         */
+        // Get the {@link GlobalVariable} instance
         mGlobalVariable = (GlobalVariable) getApplication();
         mStepCountReceiver = new StepCountReceiver();
 
-        /**
-         * Register service on the broadcast and start {@link StepCountService}
-         */
+        // Register service on the broadcast and start {@link StepCountService}
         Intent intent = new Intent(getApplicationContext(), StepCountService.class);
         IntentFilter intentFilter = new IntentFilter("com.example.android.stepcountdemo.StepCountService");
         registerReceiver(mStepCountReceiver, intentFilter);
         startService(intent);
 
-        /**
-         * Create Handler instance by the default constructor and start loop
-         */
+        // Create Handler instance by the default constructor and start loop
         mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
