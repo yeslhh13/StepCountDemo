@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="FontColor">
+        <item>blue</item>
+        <item>pink</item>
+        <item>yellow</item>
+        <item>red</item>
+        <item>black</item>
+    </string-array>
+
+    <string-array name="FontColor_Values">
+        <item>#3333FF</item>
+        <item>#CC33CC</item>
+        <item>#FFFF33</item>
+        <item>#DD0000</item>
+        <item>#ffffff</item>
+    </string-array>
+
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="key_useUserName"
+        android:summaryOff="사용자의 이름 사용 X"
+        android:summaryOn="사용자의 이름 사용 O"
+        android:title="사용자의 이름 사용" />
+
+    <PreferenceCategory android:title="알림 설정">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="alarm_setting"
+            android:summary="알림을 설정합니다."
+            android:title="알림 사용" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="alarm_setting"
+            android:key="alarm_sound_setting"
+            android:title="소리알림 사용" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="alarm_setting"
+            android:key="alarm_vibe_setting"
+            android:title="진동알림 사용" />
+        />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="글꼴 설정">
+        <ListPreference
+            android:defaultValue="0"
+            android:dependency="font_setting"
+            android:entries="@array/FontColor"
+            android:entryValues="@array/FontColor_Values"
+            android:key="font_setting"
+            android:title="글꼴색깔 설정" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
+
