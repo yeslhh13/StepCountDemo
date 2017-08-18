@@ -62,8 +62,8 @@ public class StepCountService extends Service implements SensorEventListener {
 
         // Get the {@link SensorManager} instance with the argument {@link SENSOR_SERVICE}
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        // Get the default TYPE_STEP_COUNTER sensor
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        // Get the default TYPE_STEP_DETECTOR sensor
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         // Get the {@link GlobalVariable} instance
         mGlobalVariable = (GlobalVariable) getApplication();
 
