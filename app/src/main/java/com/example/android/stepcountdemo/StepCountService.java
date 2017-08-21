@@ -5,15 +5,22 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.CountDownTimer;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.example.android.stepcountdemo.db.TreeContract;
+import com.example.android.stepcountdemo.db.TreeDBHelper;
+
+import java.util.Calendar;
 
 /**
  * Created by Kat on 2017-04-02.
@@ -22,8 +29,6 @@ import android.util.Log;
  */
 
 public class StepCountService extends Service implements SensorEventListener {
-    private static final int MILLIS_IN_FUTURE = 1000 * 1000;
-    private static final int COUNT_DOWN_INTERVAL = 1000;
     /**
      * SensorManager to get the access of the device's sensors
      */
@@ -36,11 +41,6 @@ public class StepCountService extends Service implements SensorEventListener {
      * {@link GlobalVariable} to store the step count value
      */
     private GlobalVariable mGlobalVariable;
-    /**
-     * {@link CountDownTimer} to schedule a countdown until a time in the future,
-     * with regular notifications on intervals along the way
-     */
-    private CountDownTimer mCountDownTimer;
 
     public StepCountService() {
     }
@@ -66,10 +66,6 @@ public class StepCountService extends Service implements SensorEventListener {
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         // Get the {@link GlobalVariable} instance
         mGlobalVariable = (GlobalVariable) getApplication();
-
-        // Set and start {@link #mCountDownTimer}
-        setCountDownTimer();
-        mCountDownTimer.start();
     }
 
     @Override
@@ -77,23 +73,7 @@ public class StepCountService extends Service implements SensorEventListener {
         //TODO:Save the step count data to the database
         super.onDestroy();
         Log.i("StepCountService", "onDestroy");
-        mCountDownTimer.cancel();
         registerRestartAlarm();
-    }
-
-    private void setCountDownTimer() {
-        Log.i("StepCountService", "setCountDownTimer");
-        mCountDownTimer = new CountDownTimer(MILLIS_IN_FUTURE, COUNT_DOWN_INTERVAL) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        };
     }
 
     /**
@@ -121,7 +101,31 @@ public class StepCountService extends Service implements SensorEventListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //TODO:Load the step count data from the database if today's data exists
+        TreeDBHelper dbHelper = new TreeDBHelper(this.getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Uri contentUri = TreeContract.StepsEntry.CONTENT_URI;
+
+        // Current calendar value
+        Calendar calendar = Calendar.getInstance();
+        String date_value = String.valueOf(calendar.get(Calendar.YEAR)) + String.valueOf(calendar.get(Calendar.MONTH) + 1)
+                + String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+
+        String selectString = "SELECT * FROM " + TreeContract.StepsEntry.TABLE_NAME + " WHERE "
+                + TreeContract.StepsEntry.COLUMN_STEPS_DATE + " =?";
+
+        // Put the date value in an array to avoid an unrecognized token error
+        Cursor cursor = db.rawQuery(selectString, new String[]{date_value});
+
+        boolean hasStepRecord = false;
+        if (cursor.moveToFirst())
+            hasStepRecord = true;
+
+        //Load the step count data from the database if today's data exists
+        if (hasStepRecord)
+            mGlobalVariable.setStepCount(cursor.getInt(0));
+
+        cursor.close();
+
         Log.i("StepCountService", "onStartCommand");
 
         Intent intent1 = new Intent(this, LoadingActivity.class);
