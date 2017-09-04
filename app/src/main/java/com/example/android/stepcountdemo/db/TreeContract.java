@@ -57,7 +57,7 @@ public final class TreeContract {
         /**
          * The content Uri to access the tree data in the provider
          */
-        private static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_MAIN);
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_MAIN);
     }
 
     /**

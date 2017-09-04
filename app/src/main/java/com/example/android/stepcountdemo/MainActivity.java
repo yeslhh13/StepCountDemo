@@ -16,6 +16,8 @@ import com.example.android.stepcountdemo.db.TreeContract;
 import com.example.android.stepcountdemo.db.TreeDBHelper;
 import com.example.android.stepcountdemo.setting.SettingActivity;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.Calendar;
 
 /**
@@ -98,6 +100,35 @@ public class MainActivity extends TabActivity {
                     .setAction("ACTION.DESTROY.StepCountService").setData(getContentUri()).putExtra("date", date_value);
             sendBroadcast(intent);
         }
+
+        // Save current tree info to internal storage
+        final TreeDBHelper dbHelper = new TreeDBHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        FileWriter fw = null;
+
+        try {
+            Cursor cursor = db.rawQuery("SELECT " + TreeContract.MainEntry._ID + " FROM " + TreeContract.MainEntry.TABLE_NAME, null);
+            cursor.moveToLast();
+            int tree_id = cursor.getInt(0);
+            cursor.close();
+
+            GlobalVariable mGlobalVariable = (GlobalVariable) getApplication();
+
+            File file = new File("StepCountTreeInfo.txt");
+            String text = String.valueOf(tree_id) + "\n" + String.valueOf(mGlobalVariable.getTreeStep());
+
+            fw = new FileWriter(file);
+            fw.write(text);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (fw != null)
+            try {
+                fw.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
     }
 
     private Uri getContentUri() {

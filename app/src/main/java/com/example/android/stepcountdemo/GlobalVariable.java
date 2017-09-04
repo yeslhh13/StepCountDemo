@@ -10,9 +10,13 @@ import android.app.Application;
 
 public class GlobalVariable extends Application {
     /**
-     * stores step count value
+     * Stores step count value
      */
     private int mStepCount = 0;
+    /**
+     * Stores tree step count value
+     */
+    private int mTreeStep = 0;
 
     public int getStepCount() {
         return mStepCount;
@@ -22,11 +26,27 @@ public class GlobalVariable extends Application {
         this.mStepCount = stepCount;
     }
 
+    public int getTreeStep() {
+        return mTreeStep;
+    }
+
+    public void setTreeStep(int mTreeStep) {
+        this.mTreeStep = mTreeStep;
+    }
+
     public void increaseStepCount() {
         this.mStepCount++;
     }
 
+    public void increaseTreeStep() {
+        this.mTreeStep++;
+    }
+
     public void resetStepCount() {
         this.mStepCount = 0;
+    }
+
+    public void resetTreeStep() {
+        this.mTreeStep = 0;
     }
 }
