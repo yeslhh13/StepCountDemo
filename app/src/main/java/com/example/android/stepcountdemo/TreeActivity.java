@@ -174,8 +174,8 @@ public class TreeActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        treeImage.setImageResource(getDrawableIDByStepCount(R.drawable.cherryblossom));
-        treeImage.setTag(R.drawable.cherryblossom);
+        treeImage.setImageResource(getDrawableIDByStepCount(R.drawable.tree_base));
+        treeImage.setTag(R.drawable.tree_base);
     }
 
     /**
@@ -235,7 +235,7 @@ public class TreeActivity extends AppCompatActivity {
         int drawableID;
 
         if (stepCount < 300)
-            drawableID = R.drawable.cherryblossom;
+            drawableID = R.drawable.tree_base;
         else if (stepCount < 1000)
             drawableID = R.drawable.cherryblossom_2;
         else if (stepCount < 2500)

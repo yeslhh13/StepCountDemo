@@ -43,8 +43,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom"
-        android:orientation="vertical">
+        android:gravity="bottom">
 
         <ImageView
             android:id="@+id/treeImage"
@@ -53,15 +52,15 @@
             android:layout_centerInParent="true"
             android:contentDescription="@string/image_view_description_tree"
             android:scaleType="fitXY"
-            android:src="@drawable/cherryblossom" />
+            android:src="@drawable/tree_base" />
 
         <ImageView
             android:id="@+id/greenGrass"
             android:layout_width="match_parent"
-            android:layout_height="109dp"
+            android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:contentDescription="@string/image_view_description_grass"
             android:scaleType="fitXY"
-            android:src="@drawable/greengrass" />
+            android:src="@drawable/leaves" />
     </RelativeLayout>
 </LinearLayout>
