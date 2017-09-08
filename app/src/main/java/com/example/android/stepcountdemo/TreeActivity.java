@@ -26,6 +26,7 @@ import com.example.android.stepcountdemo.db.TreeDBHelper;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.lang.ref.WeakReference;
 
 /**
  * Created by Kat on 2017-03-24
@@ -36,9 +37,10 @@ import java.io.FileReader;
 
 public class TreeActivity extends AppCompatActivity {
     /**
-     * Handler to show the user's step count in real time
+     * Handler and Thread to show the user's step count in real time
      */
-    private static Handler mHandler;
+    private final MyHandler mHandler = new MyHandler(this);
+    private BackgroundThread thread;
     /**
      * TextView to show step count to the user
      */
@@ -107,20 +109,6 @@ public class TreeActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter("com.example.android.stepcountdemo.StepCountService");
         registerReceiver(mStepCountReceiver, intentFilter);
         startService(intent);
-
-        // Create Handler instance by the default constructor and start loop
-        mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                setViews();
-                Log.i("HandlerMessage", "Handler running!");
-
-                this.sendEmptyMessageDelayed(0, 1000);
-            }
-        };
-
-        mHandler.sendEmptyMessage(1);
     }
 
     /**
@@ -179,12 +167,36 @@ public class TreeActivity extends AppCompatActivity {
     }
 
     /**
+     * Start the Handler loop
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        thread = new BackgroundThread();
+        thread.setRunning(true);
+        thread.start();
+    }
+
+    /**
      * stop the Handler loop when paused
      */
     @Override
     protected void onPause() {
         super.onPause();
-        mHandler.removeMessages(0);
+
+        boolean b = true;
+        thread.setRunning(false);
+
+        // stop the thread
+        while (b) {
+            try {
+                thread.join();
+                b = false;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -193,7 +205,10 @@ public class TreeActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        mHandler.sendEmptyMessage(1);
+
+        thread = new BackgroundThread();
+        thread.setRunning(true);
+        thread.start();
     }
 
     /**
@@ -202,7 +217,10 @@ public class TreeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mHandler.sendEmptyMessage(1);
+
+        thread = new BackgroundThread();
+        thread.setRunning(true);
+        thread.start();
     }
 
     /**
@@ -211,9 +229,22 @@ public class TreeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        boolean b = true;
+        thread.setRunning(false);
+
+        // stop the thread
+        while (b) {
+            try {
+                thread.join();
+                b = false;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         Log.i("TreeActivity", "onDestroy");
         unregisterReceiver(mStepCountReceiver);
-        mHandler.removeMessages(0);
     }
 
     /**
@@ -222,7 +253,18 @@ public class TreeActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        mHandler.removeMessages(1);
+        boolean b = true;
+        thread.setRunning(false);
+
+        // stop the thread
+        while (b) {
+            try {
+                thread.join();
+                b = false;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -297,5 +339,43 @@ public class TreeActivity extends AppCompatActivity {
         int result = getContentResolver().update(TreeContract.MainEntry.CONTENT_URI, values, TreeContract.MainEntry._ID + " = " + tree_id, null);
         if (result == 0)
             Log.e("Update Tree", "failed");
+    }
+
+    /**
+     * Custom Handler class
+     */
+    public static class MyHandler extends Handler {
+        private final WeakReference<TreeActivity> mActivity;
+
+        public MyHandler(TreeActivity activity) {
+            mActivity = new WeakReference<TreeActivity>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            TreeActivity activity = mActivity.get();
+            if (activity != null)
+                activity.setViews();
+        }
+    }
+
+    public class BackgroundThread extends Thread {
+        boolean running = false;
+
+        public void setRunning(boolean b) {
+            running = b;
+        }
+
+        @Override
+        public void run() {
+            while (running) {
+                try {
+                    sleep(1000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                mHandler.sendMessage(mHandler.obtainMessage());
+            }
+        }
     }
 }

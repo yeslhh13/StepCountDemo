@@ -13,10 +13,8 @@
     <string name="image_view_description_loading">Loading&#8230;</string>
 
     <string name="tab_first">나의 나무</string>
-    <string name="tab_second">다이 어리</string>
-    <string name="tab_third">달력</string>
-    <string name="tab_fourth">기부 하기</string>
-    <string name="tab_fifth">환경 설정</string>
+    <string name="tab_second">달력</string>
+    <string name="tab_third">환경 설정</string>
 
     <string name="diary_write">입력</string>
     <string name="diary_main"># 다이어리</string>
