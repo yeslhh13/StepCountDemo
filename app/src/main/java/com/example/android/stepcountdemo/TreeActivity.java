@@ -8,11 +8,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -24,6 +26,7 @@ import com.example.android.stepcountdemo.db.TreeContract;
 import com.example.android.stepcountdemo.db.TreeDBHelper;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.lang.ref.WeakReference;
@@ -75,6 +78,19 @@ public class TreeActivity extends AppCompatActivity {
         stepCountView = (TextView) findViewById(R.id.step_count);
         treeImage = (ImageView) findViewById(R.id.treeImage);
 
+        checkTree();
+
+        // Register service on the broadcast and start {@link StepCountService}
+        Intent intent = new Intent(getApplicationContext(), StepCountService.class);
+        IntentFilter intentFilter = new IntentFilter("com.example.android.stepcountdemo.StepCountService");
+        registerReceiver(mStepCountReceiver, intentFilter);
+        startService(intent);
+    }
+
+    /**
+     * Check if growing tree exists
+     */
+    public void checkTree() {
         final TreeDBHelper dbHelper = new TreeDBHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -82,6 +98,7 @@ public class TreeActivity extends AppCompatActivity {
         Cursor cursor = db.rawQuery("SELECT * FROM " + TreeContract.MainEntry.TABLE_NAME
                 + " WHERE " + TreeContract.MainEntry.COLUMN_TREE_LEVEL + " < 5;", null);
         int count = cursor.getCount();
+        Toast.makeText(TreeActivity.this, String.valueOf(count), Toast.LENGTH_SHORT).show();
 
         if (count > 0) {
             // If the growing tree exists in the database, load the tree info from the database
@@ -103,38 +120,31 @@ public class TreeActivity extends AppCompatActivity {
         }
 
         cursor.close();
-
-        // Register service on the broadcast and start {@link StepCountService}
-        Intent intent = new Intent(getApplicationContext(), StepCountService.class);
-        IntentFilter intentFilter = new IntentFilter("com.example.android.stepcountdemo.StepCountService");
-        registerReceiver(mStepCountReceiver, intentFilter);
-        startService(intent);
     }
 
     /**
      * Insert new tree to the database
      */
     private void insertTree() {
-        final ContentValues values = new ContentValues();
-
         final View view = LayoutInflater.from(this).inflate(R.layout.dialog_edittext, null);
         final EditText input = (EditText) view.findViewById(R.id.edit_tree_name);
 
         final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage("나무의 이름을 지어주세요.")
-                .setView(view).setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(TreeActivity.this, "앱을 종료합니다.", Toast.LENGTH_SHORT).show();
-                        finishAffinity();
-                    }
-                })
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                .setView(view).setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Override
                     }
-                })
-                .setIcon(R.mipmap.ic_launcher).setTitle("새로운 시작").create();
+                }).setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            finishAffinity();
+                            return true;
+                        }
+                        return false;
+                    }
+                }).setCancelable(false).setIcon(R.mipmap.ic_launcher).setTitle("새로운 시작").create();
         alertDialog.show();
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,25 +152,32 @@ public class TreeActivity extends AppCompatActivity {
                 if (input.getText().toString().equals("")) {
                     Toast.makeText(TreeActivity.this, "이름을 입력해주세요", Toast.LENGTH_SHORT).show();
                 } else {
+                    ContentValues values = new ContentValues();
+
                     values.put(TreeContract.MainEntry.COLUMN_TREE_NAME, input.getText().toString());
+                    values.put(TreeContract.MainEntry.COLUMN_TREE_TYPE, "cherryblossom");
+                    values.put(TreeContract.MainEntry.COLUMN_TREE_LEVEL, 1);
+
+                    Uri uri = TreeActivity.this.getContentResolver().insert(TreeContract.MainEntry.CONTENT_URI, values);
+
+                    if (uri == null)
+                        Log.e("Tree Insertion", "failed");
+
+                    try {
+                        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "StepCountTreeInfo.txt");
+                        FileOutputStream fos = new FileOutputStream(file);
+
+                        String text = String.valueOf(tree_id) + "\n" + String.valueOf(0);
+                        fos.write(text.getBytes());
+                        fos.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                     alertDialog.dismiss();
                 }
             }
         });
-
-        values.put(TreeContract.MainEntry.COLUMN_TREE_TYPE, "cherryblossom");
-        values.put(TreeContract.MainEntry.COLUMN_TREE_LEVEL, 1);
-        Uri uri = this.getContentResolver().insert(TreeContract.MainEntry.CONTENT_URI, values);
-        if (uri == null)
-            Log.e("Tree Insertion", "failed");
-
-        try {
-            FileOutputStream fileOutputStream = openFileOutput("TreeInfo", MODE_PRIVATE);
-            fileOutputStream.write(tree_id);
-            fileOutputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         treeImage.setImageResource(getDrawableIDByStepCount(R.drawable.tree_base));
         treeImage.setTag(R.drawable.tree_base);

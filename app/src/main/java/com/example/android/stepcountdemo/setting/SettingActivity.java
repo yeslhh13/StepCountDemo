@@ -1,40 +1,55 @@
 package com.example.android.stepcountdemo.setting;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AlertDialog;
 
 import com.example.android.stepcountdemo.R;
 
-//import com.example.android.stepcountdemo.ContentViewActivity;
-
 /**
  * Created by soyeon on 2017-05-25.
- * 2017-08-03 last로 만짐
+ * 2017-09-10 last로 만짐
  */
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingActivity extends PreferenceActivity implements OnPreferenceClickListener {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting); //preference setting파일 새로 만들었음
+        setContentView(R.layout.activity_setting);
     }
 
-    public static class GreenPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
-        public void onCreate(Bundle savedInstanceState) {
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+        return false;
+    }
+
+    //개발자 정보를 띄우기 위한 코드
+    //프래그먼트 생성해 addPreferencesFromResource 코드오류 해결
+    public static class GreenPreferenceFragment extends PreferenceFragment {
+        public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_settings);
-        }
 
-        public boolean onPreferenceChange(Preference pref, Object newVal) {
-            String val = newVal.toString();
-            if (pref instanceof ListPreference) {
-                ListPreference listPref = (ListPreference) pref;
-                //int pref
-            }
-            return true;
+            Preference dialogPref = findPreference("dialog_preference");
+            dialogPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setMessage("개발자 정보")
+                            .setView(R.layout.custom_dialog).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).setCancelable(false).setIcon(R.mipmap.ic_launcher).setTitle("새로운 시작").create();
+                    alertDialog.show();
+                    return false;
+                }
+            });
         }
     }
+
 }

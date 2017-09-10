@@ -1,5 +1,6 @@
 package com.example.android.stepcountdemo;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TabActivity;
@@ -9,15 +10,19 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.widget.TabHost;
 
 import com.example.android.stepcountdemo.calendar.CalendarActivity;
 import com.example.android.stepcountdemo.db.TreeContract;
 import com.example.android.stepcountdemo.db.TreeDBHelper;
 import com.example.android.stepcountdemo.setting.SettingActivity;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -27,11 +32,30 @@ import java.util.Calendar;
  */
 
 public class MainActivity extends TabActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        PermissionListener listener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                // Do nothing
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                finishAffinity();
+            }
+        };
+
+        TedPermission.with(this).setPermissionListener(listener).setRationaleTitle("권한 체크")
+                .setRationaleMessage("저장 장치 권한이 필요합니다.")
+                .setDeniedTitle("권한을 체크해주세요!")
+                .setDeniedMessage("모든 권한을 체크해주셔야 앱의 사용이 가능합니다.\n[애플리케이션 설정] > [권한] 에서 설정해주세요.")
+                .setGotoSettingButtonText("설정으로 가기")
+                .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .check();
 
         TabHost tabHost = getTabHost();
         TabHost.TabSpec spec;
@@ -92,7 +116,6 @@ public class MainActivity extends TabActivity {
         // Save current tree info to internal storage
         final TreeDBHelper dbHelper = new TreeDBHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        FileWriter fw = null;
 
         try {
             Cursor cursor = db.rawQuery("SELECT " + TreeContract.MainEntry._ID + " FROM " + TreeContract.MainEntry.TABLE_NAME, null);
@@ -102,21 +125,15 @@ public class MainActivity extends TabActivity {
 
             GlobalVariable mGlobalVariable = (GlobalVariable) getApplication();
 
-            File file = new File("StepCountTreeInfo.txt");
-            String text = String.valueOf(tree_id) + "\n" + String.valueOf(mGlobalVariable.getTreeStep());
+            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "StepCountTreeInfo.txt");
+            FileOutputStream fos = new FileOutputStream(file);
 
-            fw = new FileWriter(file);
-            fw.write(text);
+            String text = String.valueOf(tree_id) + "\n" + String.valueOf(mGlobalVariable.getTreeStep());
+            fos.write(text.getBytes());
+            fos.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        if (fw != null)
-            try {
-                fw.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
     }
 
     private Uri getContentUri() {

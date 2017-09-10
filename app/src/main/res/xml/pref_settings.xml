@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="key_useUserName"
-        android:summaryOff="사용자의 이름 사용 X"
-        android:summaryOn="사용자의 이름 사용 O"
-        android:title="사용자의 이름 사용" />
+    <PreferenceCategory android:title="나무 이름 설정">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="useTreeName"
+            android:summaryOff="미사용중"
+            android:summaryOn="사용중"
+            android:title="메인에 나무 이름 표시" />
+        <EditTextPreference
+            android:dependency="useTreeName"
+            android:key="TreeName"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="나무 이름 바꾸기" />
+    </PreferenceCategory>
 
     <PreferenceCategory android:title="알림 설정">
         <SwitchPreference
@@ -18,7 +27,10 @@
             android:defaultValue="false"
             android:dependency="alarm_setting"
             android:key="alarm_sound_setting"
-            android:title="소리알림 사용" />
+            android:title="소리알림 사용">
+
+        </SwitchPreference>
+        <RingtonePreference android:title="알림 소리 설정" />
         <SwitchPreference
             android:defaultValue="false"
             android:dependency="alarm_setting"
@@ -35,6 +47,22 @@
             android:entryValues="@array/FontColor_Values"
             android:key="font_setting"
             android:title="글꼴색깔 설정" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="개발자 소개">
+        <Preference
+            android:dialogMessage="팀 : GREEN TREE"
+            android:dialogTitle="개발자 정보"
+            android:key="dialog_preference"
+            android:title="개발자 정보" />
+
+        <Preference
+            android:summary="개발자에게 메일연락"
+            android:title="개발자에게 문의하기">
+            <intent
+                android:action="android.intent.action.SENDTO"
+                android:data="mailto:syirene14@gmail.com" />
+        </Preference>
     </PreferenceCategory>
 
 </PreferenceScreen>

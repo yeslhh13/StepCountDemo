@@ -84,8 +84,7 @@ public class StepCountService extends Service implements SensorEventListener {
      */
     @Override
     public void onSensorChanged(SensorEvent event) {
-        mGlobalVariable.increaseStepCount();
-        mGlobalVariable.increaseTreeStep();
+        mGlobalVariable.increaseCount();
     }
 
     /**

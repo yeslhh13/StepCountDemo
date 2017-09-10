@@ -34,11 +34,8 @@ public class GlobalVariable extends Application {
         this.mTreeStep = mTreeStep;
     }
 
-    public void increaseStepCount() {
+    public void increaseCount() {
         this.mStepCount++;
-    }
-
-    public void increaseTreeStep() {
         this.mTreeStep++;
     }
 
