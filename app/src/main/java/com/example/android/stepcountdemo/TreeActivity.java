@@ -85,12 +85,16 @@ public class TreeActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter("com.example.android.stepcountdemo.StepCountService");
         registerReceiver(mStepCountReceiver, intentFilter);
         startService(intent);
+
+        thread = new BackgroundThread();
+        thread.setRunning(true);
+        thread.start();
     }
 
     /**
      * Check if growing tree exists
      */
-    public void checkTree() {
+    private void checkTree() {
         final TreeDBHelper dbHelper = new TreeDBHelper(getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -98,7 +102,6 @@ public class TreeActivity extends AppCompatActivity {
         Cursor cursor = db.rawQuery("SELECT * FROM " + TreeContract.MainEntry.TABLE_NAME
                 + " WHERE " + TreeContract.MainEntry.COLUMN_TREE_LEVEL + " < 5;", null);
         int count = cursor.getCount();
-        Toast.makeText(TreeActivity.this, String.valueOf(count), Toast.LENGTH_SHORT).show();
 
         if (count > 0) {
             // If the growing tree exists in the database, load the tree info from the database
@@ -290,7 +293,7 @@ public class TreeActivity extends AppCompatActivity {
      * @param stepCount to decide which drawable ID has to be returned
      * @return drawable ID needed to change the ImageView
      */
-    public int getDrawableIDByStepCount(int stepCount) {
+    private int getDrawableIDByStepCount(int stepCount) {
         int drawableID;
 
         if (stepCount < 300)
@@ -310,7 +313,7 @@ public class TreeActivity extends AppCompatActivity {
     /**
      * method to change the TextView and the ImageView
      */
-    public void setViews() {
+    private void setViews() {
         stepCountView.setText(String.valueOf(mGlobalVariable.getTreeStep()));
         Object currentTag = treeImage.getTag();
         int drawableID = getDrawableIDByStepCount(mGlobalVariable.getTreeStep());
@@ -342,7 +345,7 @@ public class TreeActivity extends AppCompatActivity {
      *
      * @param drawableID to change level
      */
-    protected void changeLevel(int drawableID) {
+    private void changeLevel(int drawableID) {
         int newLevel = 2;
         if (drawableID == R.drawable.cherryblossom_3)
             newLevel = 3;
@@ -361,11 +364,11 @@ public class TreeActivity extends AppCompatActivity {
     /**
      * Custom Handler class
      */
-    public static class MyHandler extends Handler {
+    private static class MyHandler extends Handler {
         private final WeakReference<TreeActivity> mActivity;
 
-        public MyHandler(TreeActivity activity) {
-            mActivity = new WeakReference<TreeActivity>(activity);
+        private MyHandler(TreeActivity activity) {
+            mActivity = new WeakReference<>(activity);
         }
 
         @Override
@@ -376,18 +379,20 @@ public class TreeActivity extends AppCompatActivity {
         }
     }
 
-    public class BackgroundThread extends Thread {
+    private class BackgroundThread extends Thread {
         boolean running = false;
 
-        public void setRunning(boolean b) {
+        private void setRunning(boolean b) {
             running = b;
         }
 
         @Override
         public void run() {
+            //TODO: check if the thread runs in onCreate
+            Toast.makeText(TreeActivity.this, "Thread Running!", Toast.LENGTH_SHORT).show();
             while (running) {
                 try {
-                    sleep(1000);
+                    sleep(500);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
