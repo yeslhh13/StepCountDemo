@@ -6,11 +6,13 @@ import android.app.PendingIntent;
 import android.app.TabActivity;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.widget.TabHost;
 
 import com.example.android.stepcountdemo.calendar.CalendarActivity;
@@ -79,7 +81,14 @@ public class MainActivity extends TabActivity {
         // Set the main tab to first tab(TreeActivity.class)
         tabHost.setCurrentTab(0);
 
-        registerMidnightAlarm();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        //체크박스 값에따라 알람 여부 결정
+        if (prefs.getBoolean("alarm_setting", true)) {
+            registerMidnightAlarm();
+        } else {
+            unregisterMidnightAlarm();
+        }
     }
 
     private void registerMidnightAlarm() {
@@ -93,6 +102,17 @@ public class MainActivity extends TabActivity {
         // Repeat Alarm
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);
+    }
+
+    private void unregisterMidnightAlarm() {
+        Intent intent = new Intent(this, StepCountReceiver.class);
+        PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+        if (sender != null) {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            alarmManager.cancel(sender);
+            sender.cancel();
+        }
     }
 
     @Override

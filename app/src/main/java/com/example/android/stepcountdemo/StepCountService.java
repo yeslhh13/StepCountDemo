@@ -11,7 +11,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.net.Uri;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
@@ -84,7 +83,12 @@ public class StepCountService extends Service implements SensorEventListener {
      */
     @Override
     public void onSensorChanged(SensorEvent event) {
-        mGlobalVariable.increaseCount();
+        if (mGlobalVariable.getTreeStep() == 5000) {
+            Intent intent = new Intent(getApplicationContext(), StepCountReceiver.class).setAction("ACTION.DESTROY.TreeGrownUp");
+            sendBroadcast(intent);
+        } else {
+            mGlobalVariable.increaseCount();
+        }
     }
 
     /**
@@ -103,7 +107,6 @@ public class StepCountService extends Service implements SensorEventListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         TreeDBHelper dbHelper = new TreeDBHelper(this.getApplicationContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Uri contentUri = TreeContract.StepsEntry.CONTENT_URI;
 
         // Current calendar value
         Calendar calendar = Calendar.getInstance();

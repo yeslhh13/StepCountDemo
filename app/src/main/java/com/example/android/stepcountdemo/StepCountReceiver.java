@@ -6,9 +6,12 @@ import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -62,6 +65,29 @@ public class StepCountReceiver extends BroadcastReceiver {
             }
         }
 
+        // When the tree steps become 5000, notify the user by sending notification
+        if (intent.getAction().equals("ACTION.DESTROY.TreeGrownUp")) {
+            Intent intent1 = new Intent(context, MainActivity.class);
+            intent1.putExtra("type", "newTree");
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            //TODO:CHANGE SOUND BY GETTING RINGTONE PREFERENCE
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                    .setSmallIcon(R.drawable.greentree_logo).setContentTitle("Green Tree").setAutoCancel(true)
+                    .setWhen(System.currentTimeMillis()).setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentText("나무가 모두 자랐습니다. 새로운 나무를 키우러 돌아오세요!").setContentIntent(pendingIntent);
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+            if (prefs.getBoolean("alarm_sound_setting", true))
+                builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+            if (prefs.getBoolean("alarm_vibe_setting", true))
+                builder.setVibrate(new long[]{0, 500, 300, 500, 300});
+
+
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.notify(0, builder.build());
+        }
+
         // When midnight, save the steps data and alert to user
         if (intent.getAction().equals("ACTION.MIDNIGHT.StepCountService")) {
             final TreeDBHelper dbHelper = new TreeDBHelper(context.getApplicationContext());
@@ -73,11 +99,17 @@ public class StepCountReceiver extends BroadcastReceiver {
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class),
                     PendingIntent.FLAG_UPDATE_CURRENT);
 
+            //TODO:CHANGE SOUND BY GETTING RINGTONE PREFERENCE
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                    .setSmallIcon(R.drawable.greentree_logo).setContentTitle("Step Count Demo").setAutoCancel(true)
-                    .setWhen(System.currentTimeMillis()).setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setContentText("어제는 " + String.valueOf(mGlobal.getStepCount()) + "걸음 걸으셨습니다!")
-                    .setDefaults(NotificationCompat.DEFAULT_VIBRATE).setContentIntent(pendingIntent);
+                    .setSmallIcon(R.drawable.greentree_logo).setContentTitle("Green Tree").setAutoCancel(true)
+                    .setWhen(System.currentTimeMillis()).setContentIntent(pendingIntent)
+                    .setContentText("어제는 " + String.valueOf(mGlobal.getStepCount()) + "걸음 걸으셨습니다!");
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+            if (prefs.getBoolean("alarm_sound_setting", true))
+                builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+            if (prefs.getBoolean("alarm_vibe_setting", true))
+                builder.setVibrate(new long[]{0, 500, 300, 500, 300});
 
             // Current calendar value
             Calendar calendar = Calendar.getInstance();

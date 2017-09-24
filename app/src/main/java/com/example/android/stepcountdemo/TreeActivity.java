@@ -85,6 +85,11 @@ public class TreeActivity extends AppCompatActivity {
         treeImage = (ImageView) findViewById(R.id.treeImage);
         treeNameView = (TextView) findViewById(R.id.walk_counter);
 
+        String intentResult = getIntent().getStringExtra("type");
+        if (intentResult != null)
+            if (intentResult.equals("newTree"))
+                insertTree();
+
         checkTree();
 
         // Register service on the broadcast and start {@link StepCountService}
@@ -96,6 +101,8 @@ public class TreeActivity extends AppCompatActivity {
         thread = new BackgroundThread();
         thread.setRunning(true);
         thread.start();
+
+        checkPrefSetName();
     }
 
     /**
@@ -203,6 +210,8 @@ public class TreeActivity extends AppCompatActivity {
         thread = new BackgroundThread();
         thread.setRunning(true);
         thread.start();
+
+        checkPrefSetName();
     }
 
     /**
@@ -236,6 +245,8 @@ public class TreeActivity extends AppCompatActivity {
         thread = new BackgroundThread();
         thread.setRunning(true);
         thread.start();
+
+        checkPrefSetName();
     }
 
     /**
@@ -249,15 +260,29 @@ public class TreeActivity extends AppCompatActivity {
         thread.setRunning(true);
         thread.start();
 
+        checkPrefSetName();
+    }
+
+    private void checkPrefSetName() {
+        final TreeDBHelper dbHelper = new TreeDBHelper(getApplicationContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT " + TreeContract.MainEntry.COLUMN_TREE_NAME + " FROM "
+                + TreeContract.MainEntry.TABLE_NAME + " WHERE " + TreeContract.MainEntry._ID
+                + " = " + tree_id + ";", null);
+
+        cursor.moveToFirst();
+        String tree_name = cursor.getString(0);
+        cursor.close();
+
         //checkbox가 true값인지 받아옴
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String checkText = Boolean.toString(prefs.getBoolean("useTreeName", true));
 
         //체크박스 값에따라 나무 이름 표시할지말지 결정
         if (prefs.getBoolean("useTreeName", true))
-            treeNameView.setText(String.valueOf(tree_id)); //String.valueOf 형변환
+            treeNameView.setText(tree_name); //String.valueOf 형변환
         else
-            treeNameView.setText(" ");
+            treeNameView.setText("");
     }
 
     /**
