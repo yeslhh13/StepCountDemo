@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -49,6 +51,10 @@ public class TreeActivity extends AppCompatActivity {
      */
     private TextView stepCountView;
     /**
+     * TextView to show tree's name to the user
+     */
+    private TextView treeNameView;
+    /**
      * {@link GlobalVariable} to get the step count value
      */
     private GlobalVariable mGlobalVariable;
@@ -77,6 +83,7 @@ public class TreeActivity extends AppCompatActivity {
 
         stepCountView = (TextView) findViewById(R.id.step_count);
         treeImage = (ImageView) findViewById(R.id.treeImage);
+        treeNameView = (TextView) findViewById(R.id.walk_counter);
 
         checkTree();
 
@@ -106,7 +113,7 @@ public class TreeActivity extends AppCompatActivity {
         if (count > 0) {
             // If the growing tree exists in the database, load the tree info from the database
             try {
-                FileReader fileReader = new FileReader("StepCountTreeInfo.txt");
+                FileReader fileReader = new FileReader(new File(Environment.getExternalStorageDirectory(), getString(R.string.txt_file_name)));
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
 
                 tree_id = Integer.parseInt(bufferedReader.readLine());
@@ -132,8 +139,8 @@ public class TreeActivity extends AppCompatActivity {
         final View view = LayoutInflater.from(this).inflate(R.layout.dialog_edittext, null);
         final EditText input = (EditText) view.findViewById(R.id.edit_tree_name);
 
-        final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage("나무의 이름을 지어주세요.")
-                .setView(view).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(getString(R.string.tree_name))
+                .setView(view).setPositiveButton(getString(R.string.dialog_positive), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Override
@@ -147,13 +154,13 @@ public class TreeActivity extends AppCompatActivity {
                         }
                         return false;
                     }
-                }).setCancelable(false).setIcon(R.mipmap.ic_launcher).setTitle("새로운 시작").create();
+                }).setCancelable(false).setIcon(R.drawable.greentree_logo).setTitle(getString(R.string.tree_dialog_title)).create();
         alertDialog.show();
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (input.getText().toString().equals("")) {
-                    Toast.makeText(TreeActivity.this, "이름을 입력해주세요", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TreeActivity.this, getString(R.string.tree_dialog_message), Toast.LENGTH_SHORT).show();
                 } else {
                     ContentValues values = new ContentValues();
 
@@ -167,7 +174,7 @@ public class TreeActivity extends AppCompatActivity {
                         Log.e("Tree Insertion", "failed");
 
                     try {
-                        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "StepCountTreeInfo.txt");
+                        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), getString(R.string.txt_file_name));
                         FileOutputStream fos = new FileOutputStream(file);
 
                         String text = String.valueOf(tree_id) + "\n" + String.valueOf(0);
@@ -241,6 +248,16 @@ public class TreeActivity extends AppCompatActivity {
         thread = new BackgroundThread();
         thread.setRunning(true);
         thread.start();
+
+        //checkbox가 true값인지 받아옴
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String checkText = Boolean.toString(prefs.getBoolean("useTreeName", true));
+
+        //체크박스 값에따라 나무 이름 표시할지말지 결정
+        if (prefs.getBoolean("useTreeName", true))
+            treeNameView.setText(String.valueOf(tree_id)); //String.valueOf 형변환
+        else
+            treeNameView.setText(" ");
     }
 
     /**
@@ -296,16 +313,17 @@ public class TreeActivity extends AppCompatActivity {
     private int getDrawableIDByStepCount(int stepCount) {
         int drawableID;
 
+        //TODO:change step count
         if (stepCount < 300)
             drawableID = R.drawable.tree_base;
         else if (stepCount < 1000)
-            drawableID = R.drawable.cherryblossom_2;
+            drawableID = R.drawable.tree_step2;
         else if (stepCount < 2500)
-            drawableID = R.drawable.cherryblossom_3;
+            drawableID = R.drawable.tree_step3;
         else if (stepCount < 5000)
-            drawableID = R.drawable.cherryblossom_4;
+            drawableID = R.drawable.tree_step4;
         else
-            drawableID = R.drawable.cherryblossom_5;
+            drawableID = R.drawable.tree_step5;
 
         return drawableID;
     }
@@ -318,14 +336,15 @@ public class TreeActivity extends AppCompatActivity {
         Object currentTag = treeImage.getTag();
         int drawableID = getDrawableIDByStepCount(mGlobalVariable.getTreeStep());
 
-        if (drawableID == R.drawable.cherryblossom_5) {
-            new AlertDialog.Builder(this).setMessage("나무가 모두 자랐습니다! 이제 새로운 나무가 자라납니다.")
-                    .setNeutralButton("예", new DialogInterface.OnClickListener() {
+        if (drawableID == R.drawable.tree_step5) {
+
+            new AlertDialog.Builder(this).setMessage(getString(R.string.tree_end_message))
+                    .setNeutralButton(getString(R.string.dialog_positive), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
-                    }).setIcon(R.mipmap.ic_launcher).setTitle("성장 완료")
+                    }).setIcon(R.drawable.greentree_logo).setTitle(getString(R.string.tree_end_title))
                     .create().show();
 
             mGlobalVariable.resetTreeStep();
@@ -347,11 +366,11 @@ public class TreeActivity extends AppCompatActivity {
      */
     private void changeLevel(int drawableID) {
         int newLevel = 2;
-        if (drawableID == R.drawable.cherryblossom_3)
+        if (drawableID == R.drawable.tree_step3)
             newLevel = 3;
-        else if (drawableID == R.drawable.cherryblossom_4)
+        else if (drawableID == R.drawable.tree_step4)
             newLevel = 4;
-        else if (drawableID == R.drawable.cherryblossom_5)
+        else if (drawableID == R.drawable.tree_step5)
             newLevel = 5;
 
         ContentValues values = new ContentValues();
@@ -388,8 +407,6 @@ public class TreeActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            //TODO: check if the thread runs in onCreate
-            Toast.makeText(TreeActivity.this, "Thread Running!", Toast.LENGTH_SHORT).show();
             while (running) {
                 try {
                     sleep(500);

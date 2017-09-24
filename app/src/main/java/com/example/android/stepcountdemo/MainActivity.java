@@ -37,26 +37,6 @@ public class MainActivity extends TabActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        PermissionListener listener = new PermissionListener() {
-            @Override
-            public void onPermissionGranted() {
-                // Do nothing
-            }
-
-            @Override
-            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-                finishAffinity();
-            }
-        };
-
-        TedPermission.with(this).setPermissionListener(listener).setRationaleTitle("권한 체크")
-                .setRationaleMessage("저장 장치 권한이 필요합니다.")
-                .setDeniedTitle("권한을 체크해주세요!")
-                .setDeniedMessage("모든 권한을 체크해주셔야 앱의 사용이 가능합니다.\n[애플리케이션 설정] > [권한] 에서 설정해주세요.")
-                .setGotoSettingButtonText("설정으로 가기")
-                .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .check();
-
         TabHost tabHost = getTabHost();
         TabHost.TabSpec spec;
         Intent intent;
@@ -75,6 +55,26 @@ public class MainActivity extends TabActivity {
         intent = new Intent(this, SettingActivity.class);
         spec = tabHost.newTabSpec(getString(R.string.tab_third)).setIndicator(getString(R.string.tab_third)).setContent(intent);
         tabHost.addTab(spec);
+
+        PermissionListener listener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                // Do nothing
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                finishAffinity();
+            }
+        };
+
+        TedPermission.with(this).setPermissionListener(listener).setRationaleTitle(getString(R.string.permission_title))
+                .setRationaleMessage(getString(R.string.permission_message))
+                .setDeniedTitle(getString(R.string.permission_denied_title))
+                .setDeniedMessage(getString(R.string.permission_denied_message))
+                .setGotoSettingButtonText(getString(R.string.permission_setting_go))
+                .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .check();
 
         // Set the main tab to first tab(TreeActivity.class)
         tabHost.setCurrentTab(0);
@@ -125,7 +125,7 @@ public class MainActivity extends TabActivity {
 
             GlobalVariable mGlobalVariable = (GlobalVariable) getApplication();
 
-            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "StepCountTreeInfo.txt");
+            File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), getString(R.string.txt_file_name));
             FileOutputStream fos = new FileOutputStream(file);
 
             String text = String.valueOf(tree_id) + "\n" + String.valueOf(mGlobalVariable.getTreeStep());

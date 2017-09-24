@@ -45,7 +45,7 @@
     <GridView
         android:id="@+id/monthView"
         android:layout_width="match_parent"
-        android:layout_height="247dp"
+        android:layout_height="wrap_content"
         android:background="#ffbbbbbb"
         android:horizontalSpacing="1dp"
         android:numColumns="7"
@@ -72,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:contentDescription="@string/image_view_description_loading"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/greentree_logo" />
         </LinearLayout>
 
         <LinearLayout

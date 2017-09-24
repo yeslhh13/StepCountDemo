@@ -24,6 +24,7 @@ public class SettingSubActivity extends PreferenceActivity {
 
         final EditTextPreference Tree_Name = (EditTextPreference) findPreference("treeName"); //나무 이름 설정받기
         Name = Tree_Name.getText(); //입력한 이름 값 받아오기
+
         Tree_Name.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {

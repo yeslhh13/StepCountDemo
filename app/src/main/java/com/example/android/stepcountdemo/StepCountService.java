@@ -134,7 +134,7 @@ public class StepCountService extends Service implements SensorEventListener {
 
         // Show the notification when using startForeground()
         Notification notification = new Notification.Builder(getApplicationContext()).setContentText("App Running")
-                .setSmallIcon(R.mipmap.ic_launcher).setContentTitle(getString(R.string.app_name)).setContentIntent(pendingIntent)
+                .setSmallIcon(R.drawable.greentree_logo).setContentTitle(getString(R.string.app_name)).setContentIntent(pendingIntent)
                 .build();
 
         startForeground(1, notification);

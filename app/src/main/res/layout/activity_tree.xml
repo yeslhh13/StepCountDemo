@@ -12,7 +12,6 @@
         style="@style/TextViewStyle"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="@string/layout_main_main"
         android:textColor="#070707"
         android:textSize="25sp" />
 

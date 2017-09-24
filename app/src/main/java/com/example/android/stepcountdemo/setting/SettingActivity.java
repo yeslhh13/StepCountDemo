@@ -38,13 +38,13 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
             dialogPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setMessage("개발자 정보")
+                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).setTitle("개발자 정보")
                             .setView(R.layout.custom_dialog).setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }
-                            }).setCancelable(false).setIcon(R.mipmap.ic_launcher).setTitle("새로운 시작").create();
+                            }).setCancelable(false).setIcon(R.drawable.greentree_logo).create();
                     alertDialog.show();
                     return false;
                 }

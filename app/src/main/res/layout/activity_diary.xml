@@ -49,7 +49,7 @@
                 android:layout_height="70dp"
                 android:background="@null"
                 android:contentDescription="@string/image_view_description_loading"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/greentree_logo" />
         </LinearLayout>
 
         <LinearLayout

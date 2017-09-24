@@ -74,7 +74,7 @@ public class StepCountReceiver extends BroadcastReceiver {
                     PendingIntent.FLAG_UPDATE_CURRENT);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                    .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Step Count Demo").setAutoCancel(true)
+                    .setSmallIcon(R.drawable.greentree_logo).setContentTitle("Step Count Demo").setAutoCancel(true)
                     .setWhen(System.currentTimeMillis()).setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentText("어제는 " + String.valueOf(mGlobal.getStepCount()) + "걸음 걸으셨습니다!")
                     .setDefaults(NotificationCompat.DEFAULT_VIBRATE).setContentIntent(pendingIntent);

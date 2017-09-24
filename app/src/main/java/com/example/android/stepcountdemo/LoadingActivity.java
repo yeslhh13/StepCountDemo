@@ -14,6 +14,7 @@ import android.widget.ImageView;
  */
 
 public class LoadingActivity extends Activity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

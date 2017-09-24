@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Step Count Demo</string>
+    <string name="app_name">Green Tree</string>
     <string name="title_activity_loading">LoadingActivity</string>
 
     <string name="step_count">Total Step Count</string>
@@ -8,9 +8,31 @@
     <string name="layout_main_main"># Walk around Main #</string>
     <string name="layout_main_walk">걸음</string>
 
+    <string name="permission_title">권한 체크</string>
+    <string name="permission_message">저장 장치 권한이 필요합니다.</string>
+    <string name="permission_denied_title">권한을 체크해주세요!</string>
+    <string name="permission_denied_message">모든 권한을 체크해주셔야 앱의 사용이 가능합니다. [애플리케이션 설정] > [권한] 에서 설정해주세요.</string>
+    <string name="permission_setting_go">설정으로 가기</string>
+
     <string name="image_view_description_tree">Tree growing&#8230;</string>
     <string name="image_view_description_grass">Green grass</string>
     <string name="image_view_description_loading">Loading&#8230;</string>
+
+    <string name="txt_file_name">StepCountTreeInfo.txt</string>
+
+    <string name="intent_key">tree type</string>
+    <string name="intent_start">new</string>
+    <string name="intent_another">another</string>
+    <string name="intent_tree_key">tree id</string>
+
+    <string name="tree_name">나무의 이름을 지어주세요.</string>
+    <string name="tree_dialog_title">새로운 시작</string>
+    <string name="tree_dialog_message">이름을 입력해주세요</string>
+    <string name="tree_end_message">나무가 모두 자랐습니다! 이제 새로운 나무가 자라납니다.</string>
+    <string name="tree_end_title">성장 완료</string>
+
+    <string name="dialog_positive">확인</string>
+    <string name="dialog_negative">취소</string>
 
     <string name="tab_first">나의 나무</string>
     <string name="tab_second">달력</string>
