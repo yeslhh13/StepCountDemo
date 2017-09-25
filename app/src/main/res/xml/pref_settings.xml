@@ -3,7 +3,7 @@
     <PreferenceCategory android:title="나무 이름 설정">
         <CheckBoxPreference
 
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="useTreeName"
             android:summaryOff="미사용중"
             android:summaryOn="사용중"

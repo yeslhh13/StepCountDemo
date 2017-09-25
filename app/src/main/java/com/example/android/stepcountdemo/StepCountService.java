@@ -83,7 +83,7 @@ public class StepCountService extends Service implements SensorEventListener {
      */
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (mGlobalVariable.getTreeStep() == 5000) {
+        if (mGlobalVariable.getTreeStep() == 3000) {
             Intent intent = new Intent(getApplicationContext(), StepCountReceiver.class).setAction("ACTION.DESTROY.TreeGrownUp");
             sendBroadcast(intent);
         } else {

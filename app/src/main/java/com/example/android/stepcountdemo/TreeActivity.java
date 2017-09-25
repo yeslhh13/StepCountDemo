@@ -1,5 +1,6 @@
 package com.example.android.stepcountdemo;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,12 +27,15 @@ import android.widget.Toast;
 
 import com.example.android.stepcountdemo.db.TreeContract;
 import com.example.android.stepcountdemo.db.TreeDBHelper;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 /**
  * Created by Kat on 2017-03-24
@@ -85,12 +89,36 @@ public class TreeActivity extends AppCompatActivity {
         treeImage = (ImageView) findViewById(R.id.treeImage);
         treeNameView = (TextView) findViewById(R.id.walk_counter);
 
+        PermissionListener listener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                // Do nothing
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                finishAffinity();
+            }
+        };
+
+        TedPermission.with(this).setPermissionListener(listener).setRationaleTitle(getString(R.string.permission_title))
+                .setRationaleMessage(getString(R.string.permission_message))
+                .setDeniedTitle(getString(R.string.permission_denied_title))
+                .setDeniedMessage(getString(R.string.permission_denied_message))
+                .setGotoSettingButtonText(getString(R.string.permission_setting_go))
+                .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .check();
+
         String intentResult = getIntent().getStringExtra("type");
-        if (intentResult != null)
+        if (intentResult != null) {
             if (intentResult.equals("newTree"))
                 insertTree();
+        } else {
+            checkTree();
+        }
 
-        checkTree();
+        if (tree_id != -1)
+            checkPrefSetName();
 
         // Register service on the broadcast and start {@link StepCountService}
         Intent intent = new Intent(getApplicationContext(), StepCountService.class);
@@ -101,8 +129,6 @@ public class TreeActivity extends AppCompatActivity {
         thread = new BackgroundThread();
         thread.setRunning(true);
         thread.start();
-
-        checkPrefSetName();
     }
 
     /**
@@ -114,7 +140,7 @@ public class TreeActivity extends AppCompatActivity {
 
         // Check if growing tree exists
         Cursor cursor = db.rawQuery("SELECT * FROM " + TreeContract.MainEntry.TABLE_NAME
-                + " WHERE " + TreeContract.MainEntry.COLUMN_TREE_LEVEL + " < 5;", null);
+                + " WHERE " + TreeContract.MainEntry.COLUMN_TREE_LEVEL + " < 4;", null);
         int count = cursor.getCount();
 
         if (count > 0) {
@@ -184,6 +210,13 @@ public class TreeActivity extends AppCompatActivity {
                         File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), getString(R.string.txt_file_name));
                         FileOutputStream fos = new FileOutputStream(file);
 
+                        final TreeDBHelper dbHelper = new TreeDBHelper(getApplicationContext());
+                        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+                        Cursor cursor = db.rawQuery("SELECT * FROM " + TreeContract.MainEntry.TABLE_NAME + ";", null);
+                        tree_id = cursor.getCount();
+                        cursor.close();
+
                         String text = String.valueOf(tree_id) + "\n" + String.valueOf(0);
                         fos.write(text.getBytes());
                         fos.close();
@@ -207,11 +240,12 @@ public class TreeActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        if (tree_id != -1)
+            checkPrefSetName();
+
         thread = new BackgroundThread();
         thread.setRunning(true);
         thread.start();
-
-        checkPrefSetName();
     }
 
     /**
@@ -242,11 +276,12 @@ public class TreeActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
 
+        if (tree_id != -1)
+            checkPrefSetName();
+
         thread = new BackgroundThread();
         thread.setRunning(true);
         thread.start();
-
-        checkPrefSetName();
     }
 
     /**
@@ -256,20 +291,21 @@ public class TreeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        if (tree_id != -1)
+            checkPrefSetName();
+
         thread = new BackgroundThread();
         thread.setRunning(true);
         thread.start();
-
-        checkPrefSetName();
     }
 
     private void checkPrefSetName() {
-        final TreeDBHelper dbHelper = new TreeDBHelper(getApplicationContext());
+        final TreeDBHelper dbHelper = new TreeDBHelper(TreeActivity.this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         Cursor cursor = db.rawQuery("SELECT " + TreeContract.MainEntry.COLUMN_TREE_NAME + " FROM "
-                + TreeContract.MainEntry.TABLE_NAME + " WHERE " + TreeContract.MainEntry._ID
-                + " = " + tree_id + ";", null);
+                + TreeContract.MainEntry.TABLE_NAME + " WHERE " + TreeContract.MainEntry._ID + " = "
+                + tree_id + ";", null);
 
         cursor.moveToFirst();
         String tree_name = cursor.getString(0);
@@ -279,7 +315,7 @@ public class TreeActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         //체크박스 값에따라 나무 이름 표시할지말지 결정
-        if (prefs.getBoolean("useTreeName", true))
+        if (prefs.getBoolean("useTreeName", false))
             treeNameView.setText(tree_name); //String.valueOf 형변환
         else
             treeNameView.setText("");
@@ -338,17 +374,14 @@ public class TreeActivity extends AppCompatActivity {
     private int getDrawableIDByStepCount(int stepCount) {
         int drawableID;
 
-        //TODO:change step count
         if (stepCount < 300)
             drawableID = R.drawable.tree_base;
         else if (stepCount < 1000)
             drawableID = R.drawable.tree_step2;
-        else if (stepCount < 2500)
+        else if (stepCount < 3000)
             drawableID = R.drawable.tree_step3;
-        else if (stepCount < 5000)
-            drawableID = R.drawable.tree_step4;
         else
-            drawableID = R.drawable.tree_step5;
+            drawableID = R.drawable.tree_step4;
 
         return drawableID;
     }
@@ -361,7 +394,7 @@ public class TreeActivity extends AppCompatActivity {
         Object currentTag = treeImage.getTag();
         int drawableID = getDrawableIDByStepCount(mGlobalVariable.getTreeStep());
 
-        if (drawableID == R.drawable.tree_step5) {
+        if (drawableID == R.drawable.tree_step4) {
 
             new AlertDialog.Builder(this).setMessage(getString(R.string.tree_end_message))
                     .setNeutralButton(getString(R.string.dialog_positive), new DialogInterface.OnClickListener() {
@@ -395,8 +428,6 @@ public class TreeActivity extends AppCompatActivity {
             newLevel = 3;
         else if (drawableID == R.drawable.tree_step4)
             newLevel = 4;
-        else if (drawableID == R.drawable.tree_step5)
-            newLevel = 5;
 
         ContentValues values = new ContentValues();
         values.put(TreeContract.MainEntry.COLUMN_TREE_LEVEL, newLevel);

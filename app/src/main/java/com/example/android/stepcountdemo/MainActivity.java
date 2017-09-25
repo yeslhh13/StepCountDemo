@@ -1,6 +1,5 @@
 package com.example.android.stepcountdemo;
 
-import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.TabActivity;
@@ -19,12 +18,9 @@ import com.example.android.stepcountdemo.calendar.CalendarActivity;
 import com.example.android.stepcountdemo.db.TreeContract;
 import com.example.android.stepcountdemo.db.TreeDBHelper;
 import com.example.android.stepcountdemo.setting.SettingActivity;
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -57,26 +53,6 @@ public class MainActivity extends TabActivity {
         intent = new Intent(this, SettingActivity.class);
         spec = tabHost.newTabSpec(getString(R.string.tab_third)).setIndicator(getString(R.string.tab_third)).setContent(intent);
         tabHost.addTab(spec);
-
-        PermissionListener listener = new PermissionListener() {
-            @Override
-            public void onPermissionGranted() {
-                // Do nothing
-            }
-
-            @Override
-            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-                finishAffinity();
-            }
-        };
-
-        TedPermission.with(this).setPermissionListener(listener).setRationaleTitle(getString(R.string.permission_title))
-                .setRationaleMessage(getString(R.string.permission_message))
-                .setDeniedTitle(getString(R.string.permission_denied_title))
-                .setDeniedMessage(getString(R.string.permission_denied_message))
-                .setGotoSettingButtonText(getString(R.string.permission_setting_go))
-                .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .check();
 
         // Set the main tab to first tab(TreeActivity.class)
         tabHost.setCurrentTab(0);

@@ -44,4 +44,6 @@
     <string name="donation_main"># 기부하기</string>
 
     <string name="setting_main"># 환경설정</string>
+
+    <string name="developer_info">Team name : GREEN TREE\n상명대학교 미디어소프트웨어학과 14학번\n김소연, 노예슬로 이루어진 팀 입니다.\n\n#이메일 문의\n김소연 : syirene14@gmail.com\n노예슬 : gowonkid@gmail.com\n\n감사합니다.</string>
 </resources>

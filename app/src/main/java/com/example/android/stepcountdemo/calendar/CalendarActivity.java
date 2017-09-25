@@ -1,5 +1,6 @@
 package com.example.android.stepcountdemo.calendar;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.example.android.stepcountdemo.R;
+import com.example.android.stepcountdemo.diary.DiaryWriteActivity;
 
 /**
  * Created by soyeon on 2017-05-22.
@@ -77,6 +79,15 @@ public class CalendarActivity extends AppCompatActivity {
                 monthViewAdapter.setNextMonth();
                 monthViewAdapter.notifyDataSetChanged();
                 setMonthText();
+            }
+        });
+
+        //일기쓰는 창으로 넘어가는 이벤트 처리
+        Button writeDiary = (Button) findViewById(R.id.diary_writeBtn);
+        writeDiary.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), DiaryWriteActivity.class); //DiaryWriteActivity로 넘겨줌
+                startActivity(intent);
             }
         });
 

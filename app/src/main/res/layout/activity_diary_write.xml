@@ -1,40 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="20dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/load_btn"
+        <TextView
+            android:id="@+id/timeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onClick"
-            android:text="load" />
+            android:layout_margin="10dp"
+            android:textSize="9pt" />
 
         <Button
             android:id="@+id/save_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
             android:layout_weight="1"
             android:onClick="onClick"
-            android:text="save" />
+            android:text="저장하기" />
 
-        <Button
-            android:id="@+id/delete_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="onClick"
-            android:text="delete" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/memo_edit"
@@ -45,6 +39,6 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/btn_layout"
         android:gravity="top"
-        android:hint="you just memo." />
+        android:hint="여기에 일기를 적어주세요!" />
 
-</RelativeLayout>
+</LinearLayout>
