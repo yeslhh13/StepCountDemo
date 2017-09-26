@@ -150,7 +150,8 @@ public class TreeActivity extends AppCompatActivity {
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
 
                 tree_id = Integer.parseInt(bufferedReader.readLine());
-                mGlobalVariable.setTreeStep(Integer.parseInt(bufferedReader.readLine()));
+                if (mGlobalVariable.getTreeStep() == 0)
+                    mGlobalVariable.setTreeStep(Integer.parseInt(bufferedReader.readLine()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -215,6 +216,7 @@ public class TreeActivity extends AppCompatActivity {
 
                         Cursor cursor = db.rawQuery("SELECT * FROM " + TreeContract.MainEntry.TABLE_NAME + ";", null);
                         tree_id = cursor.getCount();
+                        checkPrefSetName();
                         cursor.close();
 
                         String text = String.valueOf(tree_id) + "\n" + String.valueOf(0);
@@ -228,7 +230,6 @@ public class TreeActivity extends AppCompatActivity {
                 }
             }
         });
-
         treeImage.setImageResource(getDrawableIDByStepCount(R.drawable.tree_base));
         treeImage.setTag(R.drawable.tree_base);
     }
@@ -315,7 +316,7 @@ public class TreeActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         //체크박스 값에따라 나무 이름 표시할지말지 결정
-        if (prefs.getBoolean("useTreeName", false))
+        if (prefs.getBoolean("useTreeName", true))
             treeNameView.setText(tree_name); //String.valueOf 형변환
         else
             treeNameView.setText("");
